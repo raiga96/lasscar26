@@ -1,0 +1,323 @@
+/**
+ * Helaian Gaya CSS Utama (Premium Theme) - SukanJTS Sarawak
+ * Gabungan warna bendera Sarawak, JTS Navy Blue, Kesan Glassmorphism dan Animasi Mikro.
+ */
+
+:root {
+    --navy-blue: #0a2540;
+    --navy-light: #1e3a5f;
+    --gold: #ffd700;
+    --gold-dark: #ccab00;
+    --sarawak-red: #ef4444;
+    --dark-charcoal: #1f2937;
+    --light-grey: #f8fafc;
+    --border-color: #e2e8f0;
+}
+
+body {
+    background-color: var(--light-grey);
+    color: var(--dark-charcoal);
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
+}
+
+/* Navigasi */
+.navbar-custom {
+    background-color: var(--navy-blue);
+    border-bottom: 4px solid var(--gold);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+}
+
+.navbar-custom .navbar-brand {
+    font-weight: 700;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.navbar-custom .nav-link {
+    color: #cbd5e1;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem !important;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.navbar-custom .nav-link:hover,
+.navbar-custom .nav-link.active {
+    color: var(--gold);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Hero Section */
+.hero-carousel .carousel-item {
+    height: 60vh;
+    min-height: 400px;
+    background-color: #020617;
+}
+
+.hero-carousel img {
+    object-fit: cover;
+    opacity: 0.65;
+    filter: brightness(0.9);
+}
+
+.hero-overlay-glass {
+    background: rgba(10, 37, 64, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    color: #ffffff;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero-overlay-glass h1 {
+    font-weight: 700;
+    font-size: 2.5rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    color: #ffffff;
+}
+
+.hero-overlay-glass p {
+    font-size: 1.1rem;
+    color: #e2e8f0;
+}
+
+/* Papan Pemenang Juara Keseluruhan */
+.champion-badge-card {
+    background: linear-gradient(135deg, var(--navy-blue) 0%, #1e3a5f 100%);
+    border: 3px solid var(--gold);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    border-radius: 16px;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+}
+
+.champion-badge-card::before {
+    content: "JUARA KESELURUHAN";
+    position: absolute;
+    top: 20px;
+    right: -40px;
+    background-color: var(--gold);
+    color: var(--navy-blue);
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 0.5rem 3rem;
+    transform: rotate(45deg);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Animasi LIVE Blink */
+.badge-live-blink {
+    background-color: var(--sarawak-red);
+    color: #ffffff;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    animation: blinker 1.5s linear infinite;
+    box-shadow: 0 0 8px var(--sarawak-red);
+}
+
+@keyframes blinker {
+    50% { opacity: 0.3; }
+}
+
+/* Kad Sukan Premium */
+.sport-card {
+    border: none;
+    border-radius: 12px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.sport-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.sport-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    background-color: rgba(10, 37, 64, 0.05);
+    color: var(--navy-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.sport-card:hover .sport-icon-wrapper {
+    background-color: var(--gold);
+    color: var(--navy-blue);
+}
+
+/* Halaman Utama / Seksyen Banner */
+.section-title {
+    position: relative;
+    font-weight: 700;
+    color: var(--navy-blue);
+    margin-bottom: 2rem;
+}
+
+.section-title::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background-color: var(--gold);
+    border-radius: 2px;
+}
+
+.section-title-center {
+    text-align: center;
+    position: relative;
+    font-weight: 700;
+    color: var(--navy-blue);
+    margin-bottom: 2rem;
+}
+
+.section-title-center::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background-color: var(--gold);
+    border-radius: 2px;
+}
+
+/* Papan Pemarkahan / Medal Standings */
+.medal-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.medal-table thead {
+    background-color: var(--navy-blue);
+    color: #ffffff;
+}
+
+.medal-table th {
+    font-weight: 600;
+    border: none;
+    padding: 1rem !important;
+}
+
+.medal-table td {
+    padding: 1rem !important;
+    border-top: 1px solid var(--border-color);
+}
+
+.medal-gold {
+    color: #fbbf24; /* Amber 400 */
+    font-size: 1.2rem;
+}
+
+.medal-silver {
+    color: #94a3b8; /* Slate 400 */
+    font-size: 1.2rem;
+}
+
+.medal-bronze {
+    color: #b45309; /* Amber 700 */
+    font-size: 1.2rem;
+}
+
+/* Lightbox Galeri */
+.gallery-grid-item {
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    transition: all 0.3s;
+}
+
+.gallery-grid-item img,
+.gallery-grid-item video {
+    transition: all 0.3s;
+}
+
+.gallery-grid-item:hover img,
+.gallery-grid-item:hover video {
+    transform: scale(1.05);
+}
+
+/* Butang Custom */
+.btn-navy {
+    background-color: var(--navy-blue);
+    color: #ffffff;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-navy:hover {
+    background-color: var(--navy-light);
+    color: #ffffff;
+}
+
+.btn-gold {
+    background-color: var(--gold);
+    color: var(--navy-blue);
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-gold:hover {
+    background-color: var(--gold-dark);
+    color: var(--navy-blue);
+}
+
+/* Footer */
+.footer-custom {
+    background-color: #020617;
+    color: #94a3b8;
+    border-top: 4px solid var(--gold);
+}
+
+.footer-custom h5 {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.footer-custom a {
+    color: #94a3b8;
+    transition: color 0.2s;
+}
+
+.footer-custom a:hover {
+    color: var(--gold);
+}
+
+/* Map Embed Wrapper */
+.map-container {
+    position: relative;
+    overflow: hidden;
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+.map-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}

@@ -1,0 +1,47 @@
+[20-Jul-2026 13:49:20 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in C:\wamp64\www\lasscar26\install.php:16
+Stack trace:
+#0 C:\wamp64\www\lasscar26\install.php(16): mysqli->__construct('localhost', 'root', Object(SensitiveParameterValue))
+#1 {main}
+  thrown in C:\wamp64\www\lasscar26\install.php on line 16
+[20-Jul-2026 13:49:23 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in C:\wamp64\www\lasscar26\install.php:16
+Stack trace:
+#0 C:\wamp64\www\lasscar26\install.php(16): mysqli->__construct('localhost', 'root', Object(SensitiveParameterValue))
+#1 {main}
+  thrown in C:\wamp64\www\lasscar26\install.php on line 16
+[20-Jul-2026 13:49:36 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Access denied for user 'root'@'localhost' (using password: NO) in C:\wamp64\www\lasscar26\install.php:16
+Stack trace:
+#0 C:\wamp64\www\lasscar26\install.php(16): mysqli->__construct('127.0.0.1', 'root', Object(SensitiveParameterValue))
+#1 {main}
+  thrown in C:\wamp64\www\lasscar26\install.php on line 16
+[20-Jul-2026 14:12:25 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\wamp64\www\lasscar26\includes\admin-header.php:20) in C:\wamp64\www\lasscar26\admin\bahagian\edit.php on line 88
+[20-Jul-2026 14:12:25 UTC] PHP Stack trace:
+[20-Jul-2026 14:12:25 UTC] PHP   1. {main}() C:\wamp64\www\lasscar26\admin\bahagian\edit.php:0
+[20-Jul-2026 14:12:25 UTC] PHP   2. header($header = 'Location: index.php') C:\wamp64\www\lasscar26\admin\bahagian\edit.php:88
+[20-Jul-2026 14:12:31 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\wamp64\www\lasscar26\includes\admin-header.php:20) in C:\wamp64\www\lasscar26\admin\bahagian\edit.php on line 88
+[20-Jul-2026 14:12:31 UTC] PHP Stack trace:
+[20-Jul-2026 14:12:31 UTC] PHP   1. {main}() C:\wamp64\www\lasscar26\admin\bahagian\edit.php:0
+[20-Jul-2026 14:12:31 UTC] PHP   2. header($header = 'Location: index.php') C:\wamp64\www\lasscar26\admin\bahagian\edit.php:88
+[20-Jul-2026 14:13:05 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\wamp64\www\lasscar26\includes\admin-header.php:20) in C:\wamp64\www\lasscar26\admin\bahagian\edit.php on line 88
+[20-Jul-2026 14:13:05 UTC] PHP Stack trace:
+[20-Jul-2026 14:13:05 UTC] PHP   1. {main}() C:\wamp64\www\lasscar26\admin\bahagian\edit.php:0
+[20-Jul-2026 14:13:05 UTC] PHP   2. header($header = 'Location: index.php') C:\wamp64\www\lasscar26\admin\bahagian\edit.php:88
+[20-Jul-2026 14:13:28 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\wamp64\www\lasscar26\includes\admin-header.php:20) in C:\wamp64\www\lasscar26\admin\bahagian\edit.php on line 88
+[20-Jul-2026 14:13:28 UTC] PHP Stack trace:
+[20-Jul-2026 14:13:28 UTC] PHP   1. {main}() C:\wamp64\www\lasscar26\admin\bahagian\edit.php:0
+[20-Jul-2026 14:13:28 UTC] PHP   2. header($header = 'Location: index.php') C:\wamp64\www\lasscar26\admin\bahagian\edit.php:88
+[20-Jul-2026 14:14:48 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\wamp64\www\lasscar26\includes\admin-header.php:25) in C:\wamp64\www\lasscar26\admin\bahagian\edit.php on line 88
+[20-Jul-2026 14:14:48 UTC] PHP Stack trace:
+[20-Jul-2026 14:14:48 UTC] PHP   1. {main}() C:\wamp64\www\lasscar26\admin\bahagian\edit.php:0
+[20-Jul-2026 14:14:48 UTC] PHP   2. header($header = 'Location: index.php') C:\wamp64\www\lasscar26\admin\bahagian\edit.php:88
+[20-Jul-2026 14:15:05 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\wamp64\www\lasscar26\includes\admin-header.php:25) in C:\wamp64\www\lasscar26\admin\bahagian\edit.php on line 88
+[20-Jul-2026 14:15:05 UTC] PHP Stack trace:
+[20-Jul-2026 14:15:05 UTC] PHP   1. {main}() C:\wamp64\www\lasscar26\admin\bahagian\edit.php:0
+[20-Jul-2026 14:15:05 UTC] PHP   2. header($header = 'Location: index.php') C:\wamp64\www\lasscar26\admin\bahagian\edit.php:88
+[20-Jul-2026 14:16:35 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\wamp64\www\lasscar26\includes\admin-header.php:25) in C:\wamp64\www\lasscar26\admin\bahagian\edit.php on line 88
+[20-Jul-2026 14:16:35 UTC] PHP Stack trace:
+[20-Jul-2026 14:16:35 UTC] PHP   1. {main}() C:\wamp64\www\lasscar26\admin\bahagian\edit.php:0
+[20-Jul-2026 14:16:35 UTC] PHP   2. header($header = 'Location: index.php') C:\wamp64\www\lasscar26\admin\bahagian\edit.php:88
+[20-Jul-2026 14:16:45 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at C:\wamp64\www\lasscar26\includes\admin-header.php:25) in C:\wamp64\www\lasscar26\admin\bahagian\edit.php on line 88
+[20-Jul-2026 14:16:45 UTC] PHP Stack trace:
+[20-Jul-2026 14:16:45 UTC] PHP   1. {main}() C:\wamp64\www\lasscar26\admin\bahagian\edit.php:0
+[20-Jul-2026 14:16:45 UTC] PHP   2. header($header = 'Location: index.php') C:\wamp64\www\lasscar26\admin\bahagian\edit.php:88
