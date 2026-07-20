@@ -13,7 +13,7 @@ ini_set('error_log', __DIR__ . '/../error_log.txt');
 // Konfigurasi Pangkalan Data
 define('DB_HOST', '127.0.0.1');
 define('DB_USER', 'root');
-define('DB_PASS', 'imdagreat1');
+define('DB_PASS', 'KataLaluan4kik@JTS');
 define('DB_NAME', 'sistem_sukan_jts');
 
 // Tetapan Sesi (Security)
