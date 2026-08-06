@@ -78,16 +78,16 @@ require_once __DIR__ . '/../includes/db.php';
                 return 'https://images.unsplash.com/photo-1534158914592-062992fbe900?auto=format&fit=crop&w=600&q=80';
             // 8. Karom / Carrom
             if (strpos($nama, 'karom') !== false || strpos($nama, 'carrom') !== false) 
-                return 'https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?auto=format&fit=crop&w=600&q=80';
+                return 'https://syncoshop.com/cdn/shop/articles/Choose_right_carrom_board_63adee8a-d00a-4e8c-a287-bebba3f2eeba.jpg?v=1742807999&width=1780';
             // 9. Petanque
             if (strpos($nama, 'petanque') !== false) 
-                return 'https://images.unsplash.com/photo-1563299796-17596ed6b017?auto=format&fit=crop&w=600&q=80';
+                return 'https://assets.domainecarneros.com/system/uploads/fae/image/asset/1777/Petanque_Game.jpg';
             // 10. Bola Jaring / Netball
             if (strpos($nama, 'bola jaring') !== false || strpos($nama, 'netball') !== false) 
-                return 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80';
+                return 'https://netball.sport/wp-content/uploads/2023/11/South-Africa-Wales-1920x1080-1.jpg';
             // 11. Pikabol / Pickleball
             if (strpos($nama, 'pikabol') !== false || strpos($nama, 'pickleball') !== false) 
-                return 'https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?auto=format&fit=crop&w=600&q=80';
+                return 'https://a57.foxnews.com/static.foxnews.com/foxnews.com/content/uploads/2024/07/1440/810/pickleball-paddle-court.jpg?ve=1&tl=1';
             
             return 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=600&q=80';
         }
