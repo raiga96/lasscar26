@@ -7,15 +7,12 @@
 
 require_once __DIR__ . '/../includes/db.php';
 
-// Hardcode penganjur pilihan automatik jika belum sedia
+// Hardcode penganjur pilihan automatik (ID 5: LANDAS MIRI)
 $chk = $conn->query("SELECT id_bahagian_menang FROM tbl_lasscar_draw ORDER BY id DESC LIMIT 1");
 if ($chk && $chk->num_rows > 0) {
-    $r = $chk->fetch_assoc();
-    if (empty($r['id_bahagian_menang'])) {
-        $conn->query("UPDATE tbl_lasscar_draw SET id_bahagian_menang = 4, status_draw = 'sedia' ORDER BY id DESC LIMIT 1");
-    }
+    $conn->query("UPDATE tbl_lasscar_draw SET id_bahagian_menang = 5, status_draw = 'sedia' ORDER BY id DESC LIMIT 1");
 } else {
-    $conn->query("INSERT INTO tbl_lasscar_draw (nama_event, id_bahagian_menang, status_draw) VALUES ('LASSCAR 2028', 4, 'sedia')");
+    $conn->query("INSERT INTO tbl_lasscar_draw (nama_event, id_bahagian_menang, status_draw) VALUES ('LASSCAR 2028', 5, 'sedia')");
 }
 ?>
 <!DOCTYPE html>

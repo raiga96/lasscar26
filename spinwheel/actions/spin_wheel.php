@@ -18,16 +18,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $draw_res = $conn->query("SELECT id, id_bahagian_menang, status_draw FROM tbl_lasscar_draw ORDER BY id DESC LIMIT 1");
 $draw = $draw_res ? $draw_res->fetch_assoc() : null;
 
-// Jika belum diset, hardcode penganjur default (cth: ID 4 - LANDAS SIBU atau ID 1 - LANDAS HQ)
-if (!$draw || empty($draw['id_bahagian_menang'])) {
-    $id_pemenang_default = 4; // LANDAS SIBU
-    $conn->query("UPDATE tbl_lasscar_draw SET id_bahagian_menang = $id_pemenang_default, status_draw = 'sedia' ORDER BY id DESC LIMIT 1");
-    $draw = [
-        'id' => 1,
-        'id_bahagian_menang' => $id_pemenang_default,
-        'status_draw' => 'sedia'
-    ];
-}
+// Penganjur lalai pilihan (ID 5: LANDAS MIRI)
+$id_pemenang_default = 5;
+$conn->query("UPDATE tbl_lasscar_draw SET id_bahagian_menang = $id_pemenang_default, status_draw = 'sedia' ORDER BY id DESC LIMIT 1");
+$draw = [
+    'id' => 1,
+    'id_bahagian_menang' => $id_pemenang_default,
+    'status_draw' => 'sedia'
+];
 
 $id_pemenang = (int)$draw['id_bahagian_menang'];
 
