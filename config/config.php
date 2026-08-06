@@ -34,7 +34,8 @@ define('CHAIRMAN_WELCOME_MESSAGE', 'Selamat datang ke portal LASSCAR 2026. Kejoh
 define('BASE_URL', '/lasscar26/');
 
 // Tetapan Had Muat Naik File (File Upload Limits)
-define('MAX_IMAGE_SIZE', 5 * 1024 * 1024); // 5MB
+define('MAX_IMAGE_SIZE', 5 * 1024 * 1024); // 5MB (Am)
+define('MAX_HERO_BANNER_SIZE', 20 * 1024 * 1024); // 20MB (Khas untuk Hero Banner)
 define('MAX_VIDEO_SIZE', 50 * 1024 * 1024); // 50MB
 define('ALLOWED_IMAGE_MIMES', ['image/jpeg', 'image/png', 'image/webp']);
 define('ALLOWED_VIDEO_MIMES', ['video/mp4', 'video/webm']);

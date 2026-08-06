@@ -32,8 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif (!isset($_FILES['banner_image']) || $_FILES['banner_image']['error'] === UPLOAD_ERR_NO_FILE) {
         $error_msg = "Sila pilih imej banner untuk dimuat naik.";
     } else {
-        // Muat naik imej banner
-        $upload_res = upload_file($_FILES['banner_image'], UPLOAD_DIR_HERO, ALLOWED_IMAGE_MIMES, MAX_IMAGE_SIZE);
+        // Muat naik imej banner (Had saiz: 20MB)
+        $upload_res = upload_file($_FILES['banner_image'], UPLOAD_DIR_HERO, ALLOWED_IMAGE_MIMES, MAX_HERO_BANNER_SIZE);
         
         if ($upload_res['success']) {
             $image_filename = $upload_res['filename'];
@@ -120,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="mb-3">
                     <label for="banner_image" class="form-label fw-semibold">Muat Naik Imej Banner <span class="text-danger">*</span></label>
                     <input class="form-control" type="file" id="banner_image" name="banner_image" accept="image/*" required>
-                    <div class="form-text small text-muted">Format: PNG, JPG, JPEG, WEBP. Saiz Maksimum: 5MB. **Resolusi Terbaik: Landskap Lebar (16:5 Ratio, Cth: 1920x600 px atau 1200x380 px)**.</div>
+                    <div class="form-text small text-muted">Format: PNG, JPG, JPEG, WEBP. **Saiz Maksimum: 20MB**. Resolusi Terbaik: Landskap Lebar (16:9 Ratio, Cth: 1920x800 px atau 1920x1080 px).</div>
                     <div class="invalid-feedback">Sila pilih fail imej yang sah.</div>
                 </div>
 

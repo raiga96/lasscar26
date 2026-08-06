@@ -52,9 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $image_filename = $banner['url_imej']; // Kekalkan imej lama
         
-        // Pengendali fail imej baru jika ada
+        // Pengendali fail imej baru jika ada (Had saiz: 20MB)
         if (isset($_FILES['banner_image']) && $_FILES['banner_image']['error'] !== UPLOAD_ERR_NO_FILE) {
-            $upload_res = upload_file($_FILES['banner_image'], UPLOAD_DIR_HERO, ALLOWED_IMAGE_MIMES, MAX_IMAGE_SIZE);
+            $upload_res = upload_file($_FILES['banner_image'], UPLOAD_DIR_HERO, ALLOWED_IMAGE_MIMES, MAX_HERO_BANNER_SIZE);
             
             if ($upload_res['success']) {
                 // Padam imej banner lama dari cakera
@@ -146,8 +146,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="mb-3">
                     <label class="form-label fw-semibold d-block">Imej Banner Semasa</label>
                     <img src="<?php echo BASE_URL; ?>assets/uploads/hero/<?php echo sanitize($banner['url_imej']); ?>" class="img-thumbnail mb-2" style="width: 240px; height: 120px; object-fit: cover;" alt="">
+                    <label for="banner_image" class="form-label fw-semibold">Tukar Imej Banner (Opsyenal)</label>
                     <input class="form-control" type="file" id="banner_image" name="banner_image" accept="image/*">
-                    <div class="form-text small text-muted">Biarkan kosong jika tiada penukaran imej banner. Format: PNG, JPG, WEBP. Saiz Maksimum: 5MB. **Resolusi Terbaik: Landskap Lebar (16:5 Ratio, Cth: 1920x600 px atau 1200x380 px)**.</div>
+                    <div class="form-text small text-muted">Biarkan kosong jika tidak mahu menukar imej sedia ada. Format: PNG, JPG, JPEG, WEBP. **Saiz Maksimum: 20MB**. **Resolusi Terbaik: Landskap Lebar (16:5 Ratio, Cth: 1920x600 px atau 1200x380 px)**.</div>
                 </div>
 
                 <div class="row g-3 mb-3">
