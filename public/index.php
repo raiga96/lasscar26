@@ -207,8 +207,8 @@ if ($res_banners && $res_banners->num_rows > 0) {
                     $display_a = $row['nama_a'] ?: $row['bhg_a'];
                     $display_b = $row['nama_b'] ?: ($row['bhg_b'] ?? 'TBD');
                     
-                    $logo_a = BASE_URL . 'assets/uploads/logo-bahagian/' . ($row['logo_a'] ?: 'default_logo.png');
-                    $logo_b = BASE_URL . 'assets/uploads/logo-bahagian/' . ($row['logo_b'] ?: 'default_logo.png');
+                    $logo_a = BASE_URL . 'assets/uploads/logo-bahagian/' . (!empty($row['logo_a']) ? $row['logo_a'] : 'default_logo.png');
+                    $logo_b = BASE_URL . 'assets/uploads/logo-bahagian/' . (!empty($row['logo_b']) ? $row['logo_b'] : 'default_logo.png');
 
                     $status_badge = '';
                     if ($row['status'] === 'live') {

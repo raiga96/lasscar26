@@ -88,8 +88,8 @@ if ($result && $result->num_rows > 0) {
                         <?php 
                         $display_a = $row['nama_a'] ?: $row['bhg_a'];
                         $display_b = $row['nama_b'] ?: ($row['bhg_b'] ?? 'TBD');
-                        $logo_a = BASE_URL . 'assets/uploads/logo-bahagian/' . ($row['logo_a'] ?: 'default_logo.png');
-                        $logo_b = BASE_URL . 'assets/uploads/logo-bahagian/' . ($row['logo_b'] ?: 'default_logo.png');
+                        $logo_a = BASE_URL . 'assets/uploads/logo-bahagian/' . (!empty($row['logo_a']) ? $row['logo_a'] : 'default_logo.png');
+                        $logo_b = BASE_URL . 'assets/uploads/logo-bahagian/' . (!empty($row['logo_b']) ? $row['logo_b'] : 'default_logo.png');
                         ?>
                         <div class="col-md-8 col-lg-6">
                             <div class="card border-0 shadow rounded-3 p-4 bg-white text-center border-top border-danger border-4">
@@ -145,8 +145,8 @@ if ($result && $result->num_rows > 0) {
                         <?php 
                         $display_a = $row['nama_a'] ?: $row['bhg_a'];
                         $display_b = $row['nama_b'] ?: ($row['bhg_b'] ?? 'TBD');
-                        $logo_a = BASE_URL . 'assets/uploads/logo-bahagian/' . ($row['logo_a'] ?: 'default_logo.png');
-                        $logo_b = BASE_URL . 'assets/uploads/logo-bahagian/' . ($row['logo_b'] ?: 'default_logo.png');
+                        $logo_a = BASE_URL . 'assets/uploads/logo-bahagian/' . (!empty($row['logo_a']) ? $row['logo_a'] : 'default_logo.png');
+                        $logo_b = BASE_URL . 'assets/uploads/logo-bahagian/' . (!empty($row['logo_b']) ? $row['logo_b'] : 'default_logo.png');
                         
                         $is_postponed = ($row['status'] === 'ditangguh');
                         ?>
@@ -200,8 +200,8 @@ if ($result && $result->num_rows > 0) {
                         $display_a = $row['nama_a'] ?: $row['bhg_a'];
                         $display_b = $row['nama_b'] ?: ($row['bhg_b'] ?? 'TBD');
                         
-                        $logo_a = BASE_URL . 'assets/uploads/logo-bahagian/' . ($row['logo_a'] ?: 'default_logo.png');
-                        $logo_b = BASE_URL . 'assets/uploads/logo-bahagian/' . ($row['logo_b'] ?: 'default_logo.png');
+                        $logo_a = BASE_URL . 'assets/uploads/logo-bahagian/' . (!empty($row['logo_a']) ? $row['logo_a'] : 'default_logo.png');
+                        $logo_b = BASE_URL . 'assets/uploads/logo-bahagian/' . (!empty($row['logo_b']) ? $row['logo_b'] : 'default_logo.png');
 
                         $pemenang_name = ($row['bhg_w']) ? ($row['nama_w'] ?: $row['bhg_w']) : null;
                         
