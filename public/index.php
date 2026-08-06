@@ -114,11 +114,7 @@ if ($res_banners && $res_banners->num_rows > 0) {
                     <div class="carousel-item h-100 <?php echo $index === 0 ? 'active' : ''; ?>">
                         <img src="<?php echo BASE_URL; ?>assets/uploads/hero/<?php echo $banner['url_imej']; ?>" class="d-block w-100 h-100" alt="">
                         <div class="carousel-caption d-none d-md-flex align-items-center h-100 justify-content-center">
-                            <div class="hero-overlay-glass">
-                                <h1><?php echo sanitize($banner['tajuk']); ?></h1>
-                                <p class="mb-0 mt-2"><?php echo TOURNAMENT_TITLE; ?></p>
-                                <span class="badge bg-gold text-dark mt-3 fw-bold"><?php echo TOURNAMENT_DATE; ?></span>
-                            </div>
+                            
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -158,7 +154,7 @@ if ($res_banners && $res_banners->num_rows > 0) {
                 <div class="bg-light p-3 rounded-circle d-inline-block border">
                     <span style="font-size: 5rem;">👤</span>
                 </div>
-                <h6 class="fw-bold text-dark mt-3 mb-0"><?php// echo CHAIRMAN_NAME; ?>Datu Awang Zamhari Bin Awang Mahmod</h6>
+                <h6 class="fw-bold text-dark mt-3 mb-0"><?php echo CHAIRMAN_NAME; ?></h6>
                 <p class="text-muted small mb-0"><?php echo CHAIRMAN_ROLE; ?></p>
             </div>
             <div class="col-md-9 border-start border-3 border-primary ps-md-5">
