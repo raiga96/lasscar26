@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnSpin = document.getElementById('btnSpin');
     const statusText = document.getElementById('statusText');
     const statusBadge = document.getElementById('statusBadge');
-    
+
     // Element Admin Control
     const adminToggleBtn = document.getElementById('adminToggleBtn');
     const adminBar = document.getElementById('adminBar');
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.font = 'bold 24px "Plus Jakarta Sans", sans-serif';
             ctx.textAlign = 'right';
             ctx.textBaseline = 'middle';
-            
+
             // Bayangan teks untuk keterlihatan
             ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
             ctx.shadowBlur = 6;
@@ -197,37 +197,37 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('actions/spin_wheel.php', {
             method: 'POST'
         })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === 'success') {
-                const targetDegrees = data.final_rotation_degrees;
-                const duration = data.duration_ms;
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const targetDegrees = data.final_rotation_degrees;
+                    const duration = data.duration_ms;
 
-                // Animasi CSS transform rotation
-                canvas.style.transition = `transform ${duration}ms cubic-bezier(0.15, 0.85, 0.15, 1)`;
-                canvas.style.transform = `rotate(${targetDegrees}deg)`;
+                    // Animasi CSS transform rotation
+                    canvas.style.transition = `transform ${duration}ms cubic-bezier(0.15, 0.85, 0.15, 1)`;
+                    canvas.style.transform = `rotate(${targetDegrees}deg)`;
 
-                // Tunggu animasi tamat untuk trigger reveal
-                setTimeout(() => {
+                    // Tunggu animasi tamat untuk trigger reveal
+                    setTimeout(() => {
+                        isSpinning = false;
+                        fetchRevealResult();
+                    }, duration + 300);
+
+                } else {
                     isSpinning = false;
-                    fetchRevealResult();
-                }, duration + 300);
-
-            } else {
+                    btnSpin.disabled = false;
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ralat Spin',
+                        text: data.message || 'Gagal memulakan animasi spin.'
+                    });
+                }
+            })
+            .catch(err => {
                 isSpinning = false;
                 btnSpin.disabled = false;
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Ralat Spin',
-                    text: data.message || 'Gagal memulakan animasi spin.'
-                });
-            }
-        })
-        .catch(err => {
-            isSpinning = false;
-            btnSpin.disabled = false;
-            console.error('Ralat spin API:', err);
-        });
+                console.error('Ralat spin API:', err);
+            });
     });
 
     // Panggil Reveal Modal & Pertunjukan Bunga Api (Fireworks)
@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             return Math.random() * (max - min) + min;
                         }
 
-                        const interval = setInterval(function() {
+                        const interval = setInterval(function () {
                             const timeLeft = animationEnd - Date.now();
                             if (timeLeft <= 0) {
                                 return clearInterval(interval);
@@ -272,12 +272,12 @@ document.addEventListener('DOMContentLoaded', () => {
                                 </div>
                                 <h1 class="fw-black text-dark mb-2 display-5" style="font-family:'Outfit', sans-serif;">${p.nama_bahagian}</h1>
                                 <p class="text-secondary fs-6 mb-3">${p.keterangan}</p>
-                                <div class="d-inline-block bg-warning text-dark fs-5 px-4 py-2.5 rounded-pill fw-bold shadow-sm">
+                                <div class="d-inline-block bg-warning text-dark fs-5 px-4 py-2 rounded-pill fw-bold shadow-sm">
                                     🏆 PENGANJUR RASMI KEJOHANAN
                                 </div>
                             </div>
                         `,
-                        confirmButtonText: '🎆 SHABASH & TAHNIAH!',
+                        confirmButtonText: '🎆 SYABAS & TAHNIAH!',
                         confirmButtonColor: '#ffc107',
                         customClass: {
                             confirmButton: 'text-dark fw-bold px-5 py-3 fs-5 rounded-pill shadow-lg'
@@ -306,21 +306,21 @@ document.addEventListener('DOMContentLoaded', () => {
             method: 'POST',
             body: formData
         })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === 'success') {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Pemenang Dikunci!',
-                    text: data.message,
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-                fetchWheelData();
-            } else {
-                Swal.fire('Ralat', data.message, 'error');
-            }
-        });
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Pemenang Dikunci!',
+                        text: data.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    fetchWheelData();
+                } else {
+                    Swal.fire('Ralat', data.message, 'error');
+                }
+            });
     });
 
     // Actions Admin Reset Wheel
@@ -341,15 +341,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     method: 'POST',
                     body: formData
                 })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        // Reset rotation visual
-                        canvas.style.transition = 'none';
-                        canvas.style.transform = 'rotate(0deg)';
-                        fetchWheelData();
-                    }
-                });
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            // Reset rotation visual
+                            canvas.style.transition = 'none';
+                            canvas.style.transform = 'rotate(0deg)';
+                            fetchWheelData();
+                        }
+                    });
             }
         });
     });

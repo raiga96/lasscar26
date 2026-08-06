@@ -16,8 +16,10 @@ $draw_res = $conn->query("
     ORDER BY d.id DESC LIMIT 1
 ");
 
-// Jika rekod draw belum sedia, ambil penganjur default LANDAS MIRI (ID 5)
-if (!$data) {
+$data = $draw_res ? $draw_res->fetch_assoc() : null;
+
+// Jika rekod draw belum sedia, ambil penganjur default LANDAS MIRI (ID 5) secara tepat dari DB
+if (!$data || empty($data['nama_bahagian'])) {
     $draw_res = $conn->query("
         SELECT b.id AS id_bahagian, b.nama_bahagian, b.singkatan, b.logo_url, b.keterangan
         FROM tbl_bahagian b WHERE b.id = 5
