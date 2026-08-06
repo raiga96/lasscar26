@@ -110,10 +110,10 @@ if ($res_banners && $res_banners->num_rows > 0) {
     <!-- MOD SLIDER BANNER / HERO HEBAT -->
     <?php if (count($banners) > 0): ?>
         <div id="heroCarousel" class="carousel slide hero-carousel shadow" data-bs-ride="carousel">
-            <div class="carousel-inner h-100">
+            <div class="carousel-inner">
                 <?php foreach ($banners as $index => $banner): ?>
-                    <div class="carousel-item h-100 <?php echo $index === 0 ? 'active' : ''; ?>">
-                        <img src="<?php echo BASE_URL; ?>assets/uploads/hero/<?php echo $banner['url_imej']; ?>" class="d-block w-100 h-100" alt="">
+                    <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                        <img src="<?php echo BASE_URL; ?>assets/uploads/hero/<?php echo $banner['url_imej']; ?>" class="d-block w-100" alt="<?php echo sanitize($banner['tajuk']); ?>">
                     </div>
                 <?php endforeach; ?>
             </div>

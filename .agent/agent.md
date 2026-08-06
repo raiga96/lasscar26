@@ -9,6 +9,7 @@ Sistem ini dibangunkan dengan pendekatan multi-agent di mana setiap agent mempun
   - Menyusun arahan dan mengagihkan tugas kepada ChatGPT & Claude.
   - Memastikan standard keselamatan (OWASP), kualiti kod, dan kepatuhan schema MySQLi.
   - Melakukan semakan terakhir (review & testing) sebelum integrasi.
+  - **Pencatatan Memori Automatik:** Wajib mencatat dan mengemaskini setiap perubahan, penambahbaikan UI/UX, dan logik backend yang telah disiapkan ke dalam fail `memory.md` untuk rujukan berterusan.
 
 ---
 
