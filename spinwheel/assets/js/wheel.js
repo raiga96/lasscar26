@@ -165,10 +165,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Kemaskini Status UI
     function updateStatusUI(draw) {
-        // Sentiasa benarkan spin tanpa perlu pengesahan berasingan
-        statusBadge.className = 'badge bg-success text-white px-3 py-2 rounded-pill';
-        statusBadge.innerText = 'REDA & SEDIA';
-        statusText.innerText = 'Roda telah bersedia untuk diputar!';
+        // Lencana misteri bertema emas (tanpa warna hijau) untuk elemen kejutan
+        statusBadge.className = 'badge bg-warning text-dark px-3 py-2 rounded-pill shadow-sm';
+        statusBadge.innerText = '✨ SEDIA DIPUTAR';
+        statusText.innerText = 'Tekan butang SPIN untuk pengumuman penganjur rasmi!';
         btnSpin.disabled = false;
     }
 
@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Panggil Reveal Modal & Confetti
+    // Panggil Reveal Modal & Pertunjukan Bunga Api (Fireworks)
     function fetchRevealResult() {
         fetch('actions/get_hasil_draw.php')
             .then(res => res.json())
@@ -238,32 +238,49 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.status === 'success') {
                     const p = data.pemenang;
 
-                    // Trigger Confetti
+                    // Pertunjukan Bunga Api Berterusan (Fireworks Cannons)
                     if (typeof confetti === 'function') {
-                        confetti({
-                            particleCount: 150,
-                            spread: 90,
-                            origin: { y: 0.6 }
-                        });
+                        const duration = 4 * 1000;
+                        const animationEnd = Date.now() + duration;
+                        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+
+                        function randomInRange(min, max) {
+                            return Math.random() * (max - min) + min;
+                        }
+
+                        const interval = setInterval(function() {
+                            const timeLeft = animationEnd - Date.now();
+                            if (timeLeft <= 0) {
+                                return clearInterval(interval);
+                            }
+                            const particleCount = 60 * (timeLeft / duration);
+
+                            // Bunga api dari sebelah kiri & kanan skrin
+                            confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+                            confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+                        }, 250);
                     }
 
-                    // SweetAlert2 Reveal Modal
+                    // SweetAlert2 Reveal Modal (Logo Gergasi & Kejutan Bunga Api)
                     Swal.fire({
-                        title: '<span style="color:#ffc107; font-weight:800; font-size:1.6rem;">TAHNIAH! PENGANJUR LASSCAR 2028</span>',
+                        title: '<div class="text-uppercase tracking-wider text-warning fw-black fs-4 mb-2">🎉 PENGUMUMAN RASMI PENGANJUR 🎉</div><h1 class="display-6 fw-bold text-dark mb-0">LASSCAR 2028</h1>',
                         html: `
-                            <div class="text-center py-3">
-                                <div class="mb-3">
-                                    <img src="${p.logo_url}" style="max-width: 140px; max-height: 140px; object-fit: contain; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.3));">
+                            <div class="text-center py-4 px-2">
+                                <div class="mb-4 position-relative d-inline-block">
+                                    <div style="position:absolute; inset:-20px; background:radial-gradient(circle, rgba(255,193,7,0.4) 0%, rgba(0,0,0,0) 70%); border-radius:50%; animation: pulse 2s infinite;"></div>
+                                    <img src="${p.logo_url}" style="width: 220px; height: 220px; object-fit: contain; filter: drop-shadow(0 12px 28px rgba(0,0,0,0.35)); position:relative; z-index:2;" alt="${p.nama_bahagian}">
                                 </div>
-                                <h2 class="fw-bold text-dark mb-1" style="font-size: 1.8rem;">${p.nama_bahagian}</h2>
-                                <p class="text-muted small">${p.keterangan}</p>
-                                <span class="badge bg-gold text-dark fs-6 px-4 py-2 rounded-pill fw-bold">PENGANJUR RASMI LASSCAR 2028</span>
+                                <h1 class="fw-black text-dark mb-2 display-5" style="font-family:'Outfit', sans-serif;">${p.nama_bahagian}</h1>
+                                <p class="text-secondary fs-6 mb-3">${p.keterangan}</p>
+                                <div class="d-inline-block bg-warning text-dark fs-5 px-4 py-2.5 rounded-pill fw-bold shadow-sm">
+                                    🏆 PENGANJUR RASMI KEJOHANAN
+                                </div>
                             </div>
                         `,
-                        confirmButtonText: '🎉 ALHAMDULILLAH / TAHNIAH!',
+                        confirmButtonText: '🎆 SHABASH & TAHNIAH!',
                         confirmButtonColor: '#ffc107',
                         customClass: {
-                            confirmButton: 'text-dark fw-bold px-4 py-2 fs-6 rounded-pill'
+                            confirmButton: 'text-dark fw-bold px-5 py-3 fs-5 rounded-pill shadow-lg'
                         },
                         allowOutsideClick: false
                     }).then(() => {
