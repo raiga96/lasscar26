@@ -16,15 +16,21 @@ $draw_res = $conn->query("
     ORDER BY d.id DESC LIMIT 1
 ");
 
-$data = $draw_res ? $draw_res->fetch_assoc() : null;
-
-if (!$data || !in_array($data['status_draw'], ['sedia', 'selesai'])) {
-    http_response_code(403);
-    echo json_encode([
-        'status' => 'error',
-        'message' => 'Hasil draw belum sedia atau pusingan belum selesai.'
-    ]);
-    exit;
+// Jika rekod draw belum sedia, ambil penganjur default LANDAS MIRI (ID 5)
+if (!$data) {
+    $draw_res = $conn->query("
+        SELECT b.id AS id_bahagian, b.nama_bahagian, b.singkatan, b.logo_url, b.keterangan
+        FROM tbl_bahagian b WHERE b.id = 5
+    ");
+    $b_data = $draw_res ? $draw_res->fetch_assoc() : null;
+    $data = [
+        'id' => 1,
+        'id_bahagian' => 5,
+        'nama_bahagian' => $b_data['nama_bahagian'] ?? 'LANDAS MIRI',
+        'singkatan' => $b_data['singkatan'] ?? 'MIRI',
+        'logo_url' => $b_data['logo_url'] ?? '',
+        'keterangan' => $b_data['keterangan'] ?? 'Penganjur Rasmi Kejohanan LASSCAR 2028'
+    ];
 }
 
 $logo_full_path = !empty($data['logo_url']) 
