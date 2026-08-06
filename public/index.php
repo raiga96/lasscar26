@@ -155,7 +155,7 @@ if ($res_banners && $res_banners->num_rows > 0) {
         <div class="row align-items-center g-4">
             <div class="col-md-3 text-center">
                 <div class="p-3 bg-light rounded-4 border shadow-sm d-inline-block">
-                    <img src="../assets/dls.png" alt="" style="width: 150px; height: 150px; object-fit: contain;">
+                    <img src="../assets/dls.png" alt="" style="width: 250px; height: 520px; object-fit: contain;">
                 </div>
                 <h6 class="fw-bold text-dark mt-3 mb-0 fs-6"><?php echo CHAIRMAN_NAME; ?></h6>
                 <p class="text-muted small mb-0"><?php echo CHAIRMAN_ROLE; ?></p>
