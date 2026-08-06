@@ -155,7 +155,7 @@ if ($res_banners && $res_banners->num_rows > 0) {
         <div class="row align-items-center g-4">
             <div class="col-md-3 text-center">
                 <div class="p-3 bg-light rounded-4 border shadow-sm d-inline-block">
-                    <span class="fs-1 d-block my-2">🏛️</span>
+                    <img src="../assets/dls.png" alt="" style="width: 150px; height: 150px; object-fit: contain;">
                 </div>
                 <h6 class="fw-bold text-dark mt-3 mb-0 fs-6"><?php echo CHAIRMAN_NAME; ?></h6>
                 <p class="text-muted small mb-0"><?php echo CHAIRMAN_ROLE; ?></p>
@@ -344,7 +344,7 @@ if ($res_banners && $res_banners->num_rows > 0) {
                     </p>
                     
                     <div class="d-flex flex-column gap-3">
-                        <div class="d-flex align-items-center justify-content-between bg-white p-3.5 rounded-3 shadow-sm border-start border-primary border-4">
+                        <div class="d-flex align-items-center justify-content-between bg-white p-3 rounded-3 shadow-sm border-start border-primary border-4">
                             <div>
                                 <h6 class="fw-bold mb-0 text-dark">Pejabat Bahagian JTS</h6>
                                 <span class="small text-muted">Ibu Pejabat & 11 Pejabat Bahagian</span>
@@ -352,7 +352,7 @@ if ($res_banners && $res_banners->num_rows > 0) {
                             <span class="badge bg-primary fs-5 px-3 py-2 rounded-3">12</span>
                         </div>
                         
-                        <div class="d-flex align-items-center justify-content-between bg-white p-3.5 rounded-3 shadow-sm border-start border-secondary border-4">
+                        <div class="d-flex align-items-center justify-content-between bg-white p-3 rounded-3 shadow-sm border-start border-secondary border-4">
                             <div>
                                 <h6 class="fw-bold mb-0 text-dark">Jabatan Jemputan Luar</h6>
                                 <span class="small text-muted">Agensi luar, PBT, agensi kerajaan</span>
