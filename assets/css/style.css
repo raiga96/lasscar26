@@ -319,3 +319,13 @@ body {
     height: 100%;
     border: 0;
 }
+
+/* Kad Kontinjen Moden Hover Effect */
+.card-hover-effect {
+    transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.card-hover-effect:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px -6px rgba(10, 37, 64, 0.15) !important;
+}

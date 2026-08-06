@@ -39,22 +39,22 @@ require_once __DIR__ . '/../includes/db.php';
                     $logo_path = BASE_URL . 'assets/uploads/logo-bahagian/' . ($row['logo_url'] ?: 'default_logo.png');
                     ?>
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                        <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden text-center p-3 bg-white">
-                            <div class="my-3">
-                                <img src="<?php echo $logo_path; ?>" alt="" class="img-fluid rounded-circle border p-2 bg-light" style="width: 90px; height: 90px; object-fit: cover;">
+                        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden text-center p-3 bg-white card-hover-effect">
+                            <div class="my-3 d-flex align-items-center justify-content-center" style="height: 110px;">
+                                <img src="<?php echo $logo_path; ?>" alt="<?php echo sanitize($row['nama_bahagian']); ?>" class="img-fluid p-1" style="max-width: 100px; max-height: 100px; object-fit: contain;">
                             </div>
-                            <h5 class="fw-bold text-dark mb-1"><?php echo sanitize($row['nama_bahagian']); ?></h5>
-                            <code class="text-secondary fw-semibold mb-2"><?php echo sanitize($row['singkatan']); ?></code>
+                            <h5 class="fw-bold text-dark mb-1 fs-6"><?php echo sanitize($row['nama_bahagian']); ?></h5>
+                            <code class="text-secondary fw-semibold mb-2 d-block"><?php echo sanitize($row['singkatan']); ?></code>
                             
-                            <div class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill py-1 px-3 mb-3 d-inline-block mx-auto small" style="width: fit-content;">
-                                <i class="bi bi-people-fill"></i> Mendaftar <?php echo $row['total_sukan']; ?> Sukan
+                            <div class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill py-1.5 px-3 mb-3 d-inline-block mx-auto small" style="width: fit-content;">
+                                <i class="bi bi-trophy-fill me-1"></i> <?php echo $row['total_sukan']; ?> Sukan
                             </div>
 
                             <!-- Medal Stats -->
-                            <div class="d-flex align-items-center justify-content-center gap-2 mt-auto border-top pt-2">
-                                <span class="badge bg-light text-dark border small" title="Emas">🥇 <?php echo $row['emas'] ?: 0; ?></span>
-                                <span class="badge bg-light text-dark border small" title="Perak">🥈 <?php echo $row['perak'] ?: 0; ?></span>
-                                <span class="badge bg-light text-dark border small" title="Gangsa">🥉 <?php echo $row['gangsa'] ?: 0; ?></span>
+                            <div class="d-flex align-items-center justify-content-center gap-2 mt-auto border-top pt-3">
+                                <span class="badge bg-light text-dark border py-1.5 px-2 small shadow-sm" title="Emas">🥇 <?php echo $row['emas'] ?: 0; ?></span>
+                                <span class="badge bg-light text-dark border py-1.5 px-2 small shadow-sm" title="Perak">🥈 <?php echo $row['perak'] ?: 0; ?></span>
+                                <span class="badge bg-light text-dark border py-1.5 px-2 small shadow-sm" title="Gangsa">🥉 <?php echo $row['gangsa'] ?: 0; ?></span>
                             </div>
                         </div>
                     </div>
@@ -88,22 +88,22 @@ require_once __DIR__ . '/../includes/db.php';
                     $logo_path = BASE_URL . 'assets/uploads/logo-bahagian/' . ($row['logo_url'] ?: 'default_logo.png');
                     ?>
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                        <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden text-center p-3 bg-white">
-                            <div class="my-3">
-                                <img src="<?php echo $logo_path; ?>" alt="" class="img-fluid rounded-circle border p-2 bg-light" style="width: 90px; height: 90px; object-fit: cover;">
+                        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden text-center p-3 bg-white card-hover-effect">
+                            <div class="my-3 d-flex align-items-center justify-content-center" style="height: 110px;">
+                                <img src="<?php echo $logo_path; ?>" alt="<?php echo sanitize($row['nama_bahagian']); ?>" class="img-fluid p-1" style="max-width: 100px; max-height: 100px; object-fit: contain;">
                             </div>
-                            <h5 class="fw-bold text-dark mb-1"><?php echo sanitize($row['nama_bahagian']); ?></h5>
-                            <code class="text-secondary fw-semibold mb-2"><?php echo sanitize($row['singkatan']); ?></code>
+                            <h5 class="fw-bold text-dark mb-1 fs-6"><?php echo sanitize($row['nama_bahagian']); ?></h5>
+                            <code class="text-secondary fw-semibold mb-2 d-block"><?php echo sanitize($row['singkatan']); ?></code>
                             
-                            <div class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 rounded-pill py-1 px-3 mb-3 d-inline-block mx-auto small" style="width: fit-content;">
-                                <i class="bi bi-people-fill"></i> Mendaftar <?php echo $row['total_sukan']; ?> Sukan
+                            <div class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 rounded-pill py-1.5 px-3 mb-3 d-inline-block mx-auto small" style="width: fit-content;">
+                                <i class="bi bi-trophy-fill me-1"></i> <?php echo $row['total_sukan']; ?> Sukan
                             </div>
 
                             <!-- Medal Stats -->
-                            <div class="d-flex align-items-center justify-content-center gap-2 mt-auto border-top pt-2">
-                                <span class="badge bg-light text-dark border small" title="Emas">🥇 <?php echo $row['emas'] ?: 0; ?></span>
-                                <span class="badge bg-light text-dark border small" title="Perak">🥈 <?php echo $row['perak'] ?: 0; ?></span>
-                                <span class="badge bg-light text-dark border small" title="Gangsa">🥉 <?php echo $row['gangsa'] ?: 0; ?></span>
+                            <div class="d-flex align-items-center justify-content-center gap-2 mt-auto border-top pt-3">
+                                <span class="badge bg-light text-dark border py-1.5 px-2 small shadow-sm" title="Emas">🥇 <?php echo $row['emas'] ?: 0; ?></span>
+                                <span class="badge bg-light text-dark border py-1.5 px-2 small shadow-sm" title="Perak">🥈 <?php echo $row['perak'] ?: 0; ?></span>
+                                <span class="badge bg-light text-dark border py-1.5 px-2 small shadow-sm" title="Gangsa">🥉 <?php echo $row['gangsa'] ?: 0; ?></span>
                             </div>
                         </div>
                     </div>
