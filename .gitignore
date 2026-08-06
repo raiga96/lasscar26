@@ -3,3 +3,4 @@ config/config.php
 error_log.txt
 
 assets/uploads/
+memory.md
