@@ -19,7 +19,8 @@ unset($_SESSION['success_msg'], $_SESSION['error_msg']);
 
 <div class="row mb-3 align-items-center">
     <div class="col-sm-6">
-        <h3 class="fw-bold text-dark mb-0">Pengurusan Banner Utama (Hero Image Juara)</h3>
+        <h3 class="fw-bold text-dark mb-1">Pengurusan Banner Utama (Hero Image)</h3>
+        <p class="text-muted small mb-0"><i class="bi bi-info-circle me-1"></i> Spesifikasi cadangan imej: <strong>1920 x 800 piksel (Nisbah 16:9)</strong> untuk paparan sempurna.</p>
     </div>
     <div class="col-sm-6 text-sm-end mt-2 mt-sm-0">
         <a href="create.php" class="btn btn-navy fw-medium">
