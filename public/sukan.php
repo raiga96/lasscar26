@@ -52,9 +52,39 @@ require_once __DIR__ . '/../includes/db.php';
             return 'bi-trophy-fill';
         }
 
+        // Fungsi pemetaan imej visual ilustrasi sukan
+        function get_sport_image_url($nama_sukan) {
+            $nama = strtolower($nama_sukan);
+            if (strpos($nama, 'boling padang') !== false || strpos($nama, 'bowls') !== false) 
+                return 'https://images.unsplash.com/photo-1593111774601-dfbce32402c4?auto=format&fit=crop&w=600&q=80';
+            if (strpos($nama, 'boling') !== false || strpos($nama, 'bowling') !== false) 
+                return 'https://images.unsplash.com/photo-1538511246838-fe67425797be?auto=format&fit=crop&w=600&q=80';
+            if (strpos($nama, 'bola sepak') !== false || strpos($nama, 'football') !== false) 
+                return 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80';
+            if (strpos($nama, 'futsal') !== false) 
+                return 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=600&q=80';
+            if (strpos($nama, 'badminton') !== false) 
+                return 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?auto=format&fit=crop&w=600&q=80';
+            if (strpos($nama, 'ping pong') !== false || strpos($nama, 'tenis meja') !== false) 
+                return 'https://images.unsplash.com/photo-1534158914592-062992fbe900?auto=format&fit=crop&w=600&q=80';
+            if (strpos($nama, 'karom') !== false || strpos($nama, 'carrom') !== false) 
+                return 'https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?auto=format&fit=crop&w=600&q=80';
+            if (strpos($nama, 'dart') !== false) 
+                return 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=600&q=80';
+            if (strpos($nama, 'petanque') !== false) 
+                return 'https://images.unsplash.com/photo-1563299796-17596ed6b017?auto=format&fit=crop&w=600&q=80';
+            if (strpos($nama, 'bola jaring') !== false || strpos($nama, 'netball') !== false) 
+                return 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80';
+            if (strpos($nama, 'pikabol') !== false || strpos($nama, 'pickleball') !== false) 
+                return 'https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?auto=format&fit=crop&w=600&q=80';
+            
+            return 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=600&q=80';
+        }
+
         if ($result && $result->num_rows > 0):
             while ($row = $result->fetch_assoc()):
                 $ikon_class = get_sport_icon($row['nama_sukan'], $row['ikon']);
+                $sport_img_url = get_sport_image_url($row['nama_sukan']);
                 
                 $kategori_badge = '';
                 switch ($row['kategori']) {
@@ -74,35 +104,49 @@ require_once __DIR__ . '/../includes/db.php';
                     : '<span class="badge bg-dark text-white rounded-pill px-3 py-1.5 fw-semibold"><i class="bi bi-person me-1"></i> Individu</span>';
                 ?>
                 <div class="col-12 col-md-6 col-lg-4">
-                    <div class="card card-hover-effect border-0 shadow-sm rounded-4 p-4 bg-white h-100 d-flex flex-column justify-content-between">
+                    <div class="card card-hover-effect border-0 shadow-sm rounded-4 overflow-hidden bg-white h-100 d-flex flex-column justify-content-between">
                         <div>
-                            <div class="d-flex align-items-center justify-content-between mb-3">
-                                <div class="bg-navy text-white rounded-3 p-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 56px; height: 56px; background-color: var(--navy-blue) !important;">
-                                    <i class="bi <?php echo sanitize($ikon_class); ?> fs-3" style="color: var(--gold) !important;"></i>
+                            <!-- Header Imej Ilustrasi Sukan -->
+                            <div class="position-relative overflow-hidden" style="height: 180px;">
+                                <img src="<?php echo $sport_img_url; ?>" class="w-100 h-100" style="object-fit: cover;" alt="<?php echo sanitize($row['nama_sukan']); ?>">
+                                <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6));"></div>
+                                
+                                <!-- Ikon Sukan Overlaid -->
+                                <div class="position-absolute bottom-0 start-0 m-3 d-flex align-items-center gap-2">
+                                    <div class="bg-navy text-white rounded-3 p-2.5 d-flex align-items-center justify-content-center shadow" style="width: 46px; height: 46px; background-color: var(--navy-blue) !important;">
+                                        <i class="bi <?php echo sanitize($ikon_class); ?> fs-4" style="color: var(--gold) !important;"></i>
+                                    </div>
+                                    <h4 class="fw-bold text-white mb-0 fs-5 text-shadow"><?php echo sanitize($row['nama_sukan']); ?></h4>
                                 </div>
-                                <span class="badge bg-light text-dark border border-secondary border-opacity-25 rounded-pill px-3 py-2 fw-bold small">
-                                    <i class="bi bi-people-fill me-1 text-primary"></i> <?php echo $row['total_pasukan']; ?> Kontinjen
-                                </span>
+
+                                <!-- Lencana Kontinjen -->
+                                <div class="position-absolute top-0 end-0 m-3">
+                                    <span class="badge bg-white text-dark shadow-sm rounded-pill px-3 py-1.5 fw-bold small">
+                                        <i class="bi bi-people-fill me-1 text-primary"></i> <?php echo $row['total_pasukan']; ?> Kontinjen
+                                    </span>
+                                </div>
                             </div>
-                            
-                            <h4 class="fw-bold text-dark mb-2 fs-5"><?php echo sanitize($row['nama_sukan']); ?></h4>
-                            
-                            <div class="d-flex gap-2 flex-wrap mb-3">
-                                <?php echo $kategori_badge; ?>
-                                <?php echo $jenis_badge; ?>
+
+                            <div class="p-4">
+                                <div class="d-flex gap-2 flex-wrap mb-3">
+                                    <?php echo $kategori_badge; ?>
+                                    <?php echo $jenis_badge; ?>
+                                </div>
+                                
+                                <p class="text-dark small mb-0 leading-relaxed" style="text-align: justify; opacity: 0.85;">
+                                    <?php echo sanitize($row['keterangan'] ?: 'Acara sukan rasmi yang dipertandingkan antara pejabat bahagian dan jabatan jemputan.'); ?>
+                                </p>
                             </div>
-                            
-                            <p class="text-dark small mb-0 leading-relaxed" style="text-align: justify; opacity: 0.85;">
-                                <?php echo sanitize($row['keterangan'] ?: 'Acara sukan rasmi yang dipertandingkan antara pejabat bahagian dan jabatan jemputan.'); ?>
-                            </p>
                         </div>
                         
                         <!-- Pautan Pantas ke Jadual & Keputusan -->
-                        <div class="mt-4 pt-3 border-top">
-                            <a href="jadual.php?sukan_id=<?php echo $row['id']; ?>" class="btn btn-navy btn-sm text-white fw-bold rounded-3 w-100 d-flex align-items-center justify-content-between px-3 py-2 border-0 shadow-sm">
-                                <span><i class="bi bi-calendar-event me-1"></i> Jadual & Fixture</span>
-                                <i class="bi bi-arrow-right"></i>
-                            </a>
+                        <div class="p-4 pt-0">
+                            <div class="pt-3 border-top">
+                                <a href="jadual.php?sukan_id=<?php echo $row['id']; ?>" class="btn btn-navy btn-sm text-white fw-bold rounded-3 w-100 d-flex align-items-center justify-content-between px-3 py-2 border-0 shadow-sm">
+                                    <span><i class="bi bi-calendar-event me-1"></i> Jadual & Fixture</span>
+                                    <i class="bi bi-arrow-right"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
