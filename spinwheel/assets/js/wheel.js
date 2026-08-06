@@ -165,24 +165,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Kemaskini Status UI
     function updateStatusUI(draw) {
-        if (!draw) return;
-
-        if (draw.status_draw === 'belum_set') {
-            statusBadge.className = 'badge bg-warning text-dark px-3 py-2 rounded-pill';
-            statusBadge.innerText = 'BELUM KUNCI';
-            statusText.innerText = 'Admin perlu kunci bahagian pemenang di panel atas.';
-            btnSpin.disabled = true;
-        } else if (draw.status_draw === 'sedia') {
-            statusBadge.className = 'badge bg-success text-white px-3 py-2 rounded-pill';
-            statusBadge.innerText = 'REDA & SEDIA';
-            statusText.innerText = 'Roda telah dikunci & sedia diputar!';
-            btnSpin.disabled = false;
-        } else if (draw.status_draw === 'selesai') {
-            statusBadge.className = 'badge bg-secondary text-white px-3 py-2 rounded-pill';
-            statusBadge.innerText = 'SELESAI';
-            statusText.innerText = 'Keputusan telah diumumkan.';
-            btnSpin.disabled = true;
-        }
+        // Sentiasa benarkan spin tanpa perlu pengesahan berasingan
+        statusBadge.className = 'badge bg-success text-white px-3 py-2 rounded-pill';
+        statusBadge.innerText = 'REDA & SEDIA';
+        statusText.innerText = 'Roda telah bersedia untuk diputar!';
+        btnSpin.disabled = false;
     }
 
     // Kemaskini Dropdown Admin
