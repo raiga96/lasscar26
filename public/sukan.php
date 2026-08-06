@@ -57,19 +57,19 @@ require_once __DIR__ . '/../includes/db.php';
             $nama = strtolower($nama_sukan);
             // 1. Dart
             if (strpos($nama, 'dart') !== false) 
-                return 'https://images.unsplash.com/photo-1618688339178-57e4e970a049?auto=format&fit=crop&w=600&q=80';
+                return 'https://aussiedartsupplies.com.au/cdn/shop/articles/Dart_98c61e6b-2c1e-4296-a849-185e39d7c5bd.jpg?v=1761006666&width=1600';
             // 2. Boling Padang / Lawn Bowls
             if (strpos($nama, 'boling padang') !== false || strpos($nama, 'lawn bowls') !== false) 
                 return 'https://images.unsplash.com/photo-1593111774601-dfbce32402c4?auto=format&fit=crop&w=600&q=80';
             // 3. Tenpin Boling / Bowling
             if (strpos($nama, 'boling') !== false || strpos($nama, 'bowling') !== false) 
-                return 'https://images.unsplash.com/photo-1545232979-fbfd14860b73?auto=format&fit=crop&w=600&q=80';
+                return 'https://sportsmatik.com/uploads/matik-sports-corner/matik-know-how/bowling_2-compressed_1513402323_45132.jpg';
             // 4. Bola Sepak
             if (strpos($nama, 'bola sepak') !== false || strpos($nama, 'football') !== false) 
-                return 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80';
+                return 'https://www.infobae.com/resizer/v2/G2AHJVGT6JFGNNO7AQFPFVKGQA.jpg?auth=58c4000debed60ed638309e89b3e0efa995c5201de178baa0666309a8eca0a6a&smart=true&width=1024&height=512&quality=85';
             // 5. Futsal
             if (strpos($nama, 'futsal') !== false) 
-                return 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=600&q=80';
+                return 'https://img.olympics.com/images/image/private/t_s_pog_staticContent_hero_lg_2x/f_auto/primary/jjzehpncbsvvonxyuhqy';
             // 6. Badminton
             if (strpos($nama, 'badminton') !== false) 
                 return 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?auto=format&fit=crop&w=600&q=80';
@@ -80,7 +80,7 @@ require_once __DIR__ . '/../includes/db.php';
             if (strpos($nama, 'karom') !== false || strpos($nama, 'carrom') !== false) 
                 return 'https://syncoshop.com/cdn/shop/articles/Choose_right_carrom_board_63adee8a-d00a-4e8c-a287-bebba3f2eeba.jpg?v=1742807999&width=1780';
             // 9. Petanque
-            if (strpos($nama, 'petanque') !== false) 
+            if (strpos($nama, 'pentanque') !== false) 
                 return 'https://assets.domainecarneros.com/system/uploads/fae/image/asset/1777/Petanque_Game.jpg';
             // 10. Bola Jaring / Netball
             if (strpos($nama, 'bola jaring') !== false || strpos($nama, 'netball') !== false) 
