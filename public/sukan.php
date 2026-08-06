@@ -13,10 +13,10 @@ require_once __DIR__ . '/../includes/db.php';
 <div class="py-5 text-white text-center mb-5 position-relative overflow-hidden" style="background: linear-gradient(135deg, #04101e 0%, #0a2540 60%, #1e3a5f 100%); border-bottom: 5px solid var(--gold);">
     <div class="container py-3 position-relative z-1">
         <span class="badge bg-gold text-dark fs-6 py-2 px-3 fw-bold rounded-pill mb-3 shadow-sm">
-            <i class="bi bi-trophy-fill me-1"></i> ACARA RASMI kejohanan
+            <i class="bi bi-trophy-fill me-1"></i> ACARA RASMI KEJOHANAN
         </span>
         <h1 class="fw-bold display-4 text-white mb-2">Acara Sukan & Kategori Pertandingan</h1>
-        <p class="lead text-slate-300 col-md-8 mx-auto fs-6 opacity-90 mb-0">Senarai sukan dipertandingkan dalam kejohanan LASSCAR 2026 beserta statistik penyertaan kontinjen.</p>
+        <p class="lead text-light col-md-8 mx-auto fs-6 opacity-90 mb-0">Senarai sukan dipertandingkan dalam kejohanan LASSCAR 2026 beserta statistik penyertaan kontinjen.</p>
     </div>
 </div>
 
@@ -59,29 +59,29 @@ require_once __DIR__ . '/../includes/db.php';
                 $kategori_badge = '';
                 switch ($row['kategori']) {
                     case 'lelaki': 
-                        $kategori_badge = '<span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 rounded-pill px-3 py-1.5 fw-semibold"><i class="bi bi-gender-male me-1"></i> Lelaki</span>'; 
+                        $kategori_badge = '<span class="badge bg-primary text-white rounded-pill px-3 py-1.5 fw-semibold"><i class="bi bi-gender-male me-1"></i> Lelaki</span>'; 
                         break;
                     case 'wanita': 
-                        $kategori_badge = '<span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 rounded-pill px-3 py-1.5 fw-semibold"><i class="bi bi-gender-female me-1"></i> Wanita</span>'; 
+                        $kategori_badge = '<span class="badge bg-danger text-white rounded-pill px-3 py-1.5 fw-semibold"><i class="bi bi-gender-female me-1"></i> Wanita</span>'; 
                         break;
                     case 'campuran': 
-                        $kategori_badge = '<span class="badge bg-warning bg-opacity-15 text-dark border border-warning border-opacity-50 rounded-pill px-3 py-1.5 fw-bold"><i class="bi bi-people me-1"></i> Campuran</span>'; 
+                        $kategori_badge = '<span class="badge bg-warning text-dark rounded-pill px-3 py-1.5 fw-bold"><i class="bi bi-people me-1"></i> Campuran</span>'; 
                         break;
                 }
 
                 $jenis_badge = ($row['jenis_perlawanan'] === 'berpasukan')
-                    ? '<span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 rounded-pill px-3 py-1.5 fw-semibold"><i class="bi bi-shield-shaded me-1"></i> Berpasukan</span>'
-                    : '<span class="badge bg-dark bg-opacity-10 text-dark border border-dark border-opacity-25 rounded-pill px-3 py-1.5 fw-semibold"><i class="bi bi-person me-1"></i> Individu</span>';
+                    ? '<span class="badge bg-secondary text-white rounded-pill px-3 py-1.5 fw-semibold"><i class="bi bi-shield-shaded me-1"></i> Berpasukan</span>'
+                    : '<span class="badge bg-dark text-white rounded-pill px-3 py-1.5 fw-semibold"><i class="bi bi-person me-1"></i> Individu</span>';
                 ?>
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="card card-hover-effect border-0 shadow-sm rounded-4 p-4 bg-white h-100 d-flex flex-column justify-content-between">
                         <div>
                             <div class="d-flex align-items-center justify-content-between mb-3">
-                                <div class="bg-navy text-white rounded-3 p-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 56px; height: 56px;">
-                                    <i class="bi <?php echo sanitize($ikon_class); ?> fs-3 text-gold"></i>
+                                <div class="bg-navy text-white rounded-3 p-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 56px; height: 56px; background-color: var(--navy-blue) !important;">
+                                    <i class="bi <?php echo sanitize($ikon_class); ?> fs-3" style="color: var(--gold) !important;"></i>
                                 </div>
-                                <span class="badge bg-navy bg-opacity-10 text-navy border border-navy border-opacity-25 rounded-pill px-3 py-2 fw-bold small">
-                                    <i class="bi bi-people-fill me-1"></i> <?php echo $row['total_pasukan']; ?> Kontinjen
+                                <span class="badge bg-light text-dark border border-secondary border-opacity-25 rounded-pill px-3 py-2 fw-bold small">
+                                    <i class="bi bi-people-fill me-1 text-primary"></i> <?php echo $row['total_pasukan']; ?> Kontinjen
                                 </span>
                             </div>
                             
@@ -92,14 +92,14 @@ require_once __DIR__ . '/../includes/db.php';
                                 <?php echo $jenis_badge; ?>
                             </div>
                             
-                            <p class="text-secondary small mb-0 leading-relaxed" style="text-align: justify;">
+                            <p class="text-dark small mb-0 leading-relaxed" style="text-align: justify; opacity: 0.85;">
                                 <?php echo sanitize($row['keterangan'] ?: 'Acara sukan rasmi yang dipertandingkan antara pejabat bahagian dan jabatan jemputan.'); ?>
                             </p>
                         </div>
                         
                         <!-- Pautan Pantas ke Jadual & Keputusan -->
                         <div class="mt-4 pt-3 border-top">
-                            <a href="jadual.php?sukan_id=<?php echo $row['id']; ?>" class="btn btn-light btn-sm text-navy fw-bold rounded-3 w-100 d-flex align-items-center justify-content-between px-3 py-2 border">
+                            <a href="jadual.php?sukan_id=<?php echo $row['id']; ?>" class="btn btn-navy btn-sm text-white fw-bold rounded-3 w-100 d-flex align-items-center justify-content-between px-3 py-2 border-0 shadow-sm">
                                 <span><i class="bi bi-calendar-event me-1"></i> Jadual & Fixture</span>
                                 <i class="bi bi-arrow-right"></i>
                             </a>
