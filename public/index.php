@@ -113,7 +113,6 @@ if ($res_banners && $res_banners->num_rows > 0) {
                 <?php foreach ($banners as $index => $banner): ?>
                     <div class="carousel-item h-100 <?php echo $index === 0 ? 'active' : ''; ?>">
                         <img src="<?php echo BASE_URL; ?>assets/uploads/hero/<?php echo $banner['url_imej']; ?>" class="d-block w-100 h-100" alt="">
-                        
                     </div>
                 <?php endforeach; ?>
             </div>

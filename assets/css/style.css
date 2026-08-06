@@ -61,8 +61,6 @@ body {
 
 .hero-carousel img {
     object-fit: cover;
-    opacity: 0.65;
-    filter: brightness(0.9);
 }
 
 .hero-overlay-glass {
