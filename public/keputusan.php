@@ -115,12 +115,10 @@ if ($result && $result->num_rows > 0) {
                                     </div>
 
                                     <!-- Pasukan B -->
-                                    <?php if ($row['pasukan_b_id'] !== null): ?>
-                                        <div class="text-center" style="width: 120px;">
-                                            <img src="<?php echo $logo_b; ?>" alt="" class="img-fluid rounded border p-1 bg-white mb-2" style="width: 60px; height: 60px; object-fit: cover;">
-                                            <span class="d-block fw-bold text-dark"><?php echo sanitize($display_b); ?></span>
-                                        </div>
-                                    <?php endif; ?>
+                                    <div class="text-center" style="width: 120px;">
+                                        <img src="<?php echo $logo_b; ?>" alt="" class="img-fluid rounded border p-1 bg-white mb-2" style="width: 60px; height: 60px; object-fit: cover;">
+                                        <span class="d-block fw-bold text-dark"><?php echo sanitize($display_b); ?></span>
+                                    </div>
                                 </div>
 
                                 <div class="text-muted small pt-3 border-top mt-3">

@@ -254,14 +254,12 @@ if ($res_banners && $res_banners->num_rows > 0) {
                                 </div>
 
                                 <!-- Pasukan B -->
-                                <?php if ($row['pasukan_b_id'] !== null): ?>
-                                    <div class="text-center flex-fill" style="max-width: 100px;">
-                                        <div class="d-flex align-items-center justify-content-center mx-auto mb-2" style="height: 60px;">
-                                            <img src="<?php echo $logo_b; ?>" alt="" class="img-fluid" style="max-width: 55px; max-height: 55px; object-fit: contain;">
-                                        </div>
-                                        <span class="d-block small fw-bold text-dark text-truncate" title="<?php echo sanitize($display_b); ?>"><?php echo sanitize($display_b); ?></span>
+                                <div class="text-center flex-fill" style="max-width: 100px;">
+                                    <div class="d-flex align-items-center justify-content-center mx-auto mb-2" style="height: 60px;">
+                                        <img src="<?php echo $logo_b; ?>" alt="" class="img-fluid" style="max-width: 55px; max-height: 55px; object-fit: contain;">
                                     </div>
-                                <?php endif; ?>
+                                    <span class="d-block small fw-bold text-dark text-truncate" title="<?php echo sanitize($display_b); ?>"><?php echo sanitize($display_b); ?></span>
+                                </div>
                             </div>
                             
                             <div class="small text-muted pt-3 border-top mt-auto d-flex align-items-center justify-content-center gap-1">
