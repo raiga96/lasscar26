@@ -52,29 +52,40 @@ require_once __DIR__ . '/../includes/db.php';
             return 'bi-trophy-fill';
         }
 
-        // Fungsi pemetaan imej visual ilustrasi sukan
+        // Fungsi pemetaan imej visual ilustrasi sukan yang tepat & khusus
         function get_sport_image_url($nama_sukan) {
             $nama = strtolower($nama_sukan);
-            if (strpos($nama, 'boling padang') !== false || strpos($nama, 'bowls') !== false) 
+            // 1. Dart
+            if (strpos($nama, 'dart') !== false) 
+                return 'https://images.unsplash.com/photo-1618688339178-57e4e970a049?auto=format&fit=crop&w=600&q=80';
+            // 2. Boling Padang / Lawn Bowls
+            if (strpos($nama, 'boling padang') !== false || strpos($nama, 'lawn bowls') !== false) 
                 return 'https://images.unsplash.com/photo-1593111774601-dfbce32402c4?auto=format&fit=crop&w=600&q=80';
+            // 3. Tenpin Boling / Bowling
             if (strpos($nama, 'boling') !== false || strpos($nama, 'bowling') !== false) 
-                return 'https://images.unsplash.com/photo-1538511246838-fe67425797be?auto=format&fit=crop&w=600&q=80';
+                return 'https://images.unsplash.com/photo-1545232979-fbfd14860b73?auto=format&fit=crop&w=600&q=80';
+            // 4. Bola Sepak
             if (strpos($nama, 'bola sepak') !== false || strpos($nama, 'football') !== false) 
                 return 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=600&q=80';
+            // 5. Futsal
             if (strpos($nama, 'futsal') !== false) 
                 return 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=600&q=80';
+            // 6. Badminton
             if (strpos($nama, 'badminton') !== false) 
                 return 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?auto=format&fit=crop&w=600&q=80';
-            if (strpos($nama, 'ping pong') !== false || strpos($nama, 'tenis meja') !== false) 
+            // 7. Ping Pong / Tenis Meja
+            if (strpos($nama, 'ping pong') !== false || strpos($nama, 'tenis meja') !== false || strpos($nama, 'table tennis') !== false) 
                 return 'https://images.unsplash.com/photo-1534158914592-062992fbe900?auto=format&fit=crop&w=600&q=80';
+            // 8. Karom / Carrom
             if (strpos($nama, 'karom') !== false || strpos($nama, 'carrom') !== false) 
                 return 'https://images.unsplash.com/photo-1610890716171-6b1bb98ffd09?auto=format&fit=crop&w=600&q=80';
-            if (strpos($nama, 'dart') !== false) 
-                return 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=600&q=80';
+            // 9. Petanque
             if (strpos($nama, 'petanque') !== false) 
                 return 'https://images.unsplash.com/photo-1563299796-17596ed6b017?auto=format&fit=crop&w=600&q=80';
+            // 10. Bola Jaring / Netball
             if (strpos($nama, 'bola jaring') !== false || strpos($nama, 'netball') !== false) 
                 return 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&w=600&q=80';
+            // 11. Pikabol / Pickleball
             if (strpos($nama, 'pikabol') !== false || strpos($nama, 'pickleball') !== false) 
                 return 'https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?auto=format&fit=crop&w=600&q=80';
             
@@ -83,7 +94,6 @@ require_once __DIR__ . '/../includes/db.php';
 
         if ($result && $result->num_rows > 0):
             while ($row = $result->fetch_assoc()):
-                $ikon_class = get_sport_icon($row['nama_sukan'], $row['ikon']);
                 $sport_img_url = get_sport_image_url($row['nama_sukan']);
                 
                 $kategori_badge = '';
@@ -106,16 +116,13 @@ require_once __DIR__ . '/../includes/db.php';
                 <div class="col-12 col-md-6 col-lg-4">
                     <div class="card card-hover-effect border-0 shadow-sm rounded-4 overflow-hidden bg-white h-100 d-flex flex-column justify-content-between">
                         <div>
-                            <!-- Header Imej Ilustrasi Sukan -->
-                            <div class="position-relative overflow-hidden" style="height: 180px;">
+                            <!-- Header Imej Ilustrasi Sukan (Tanpa Ikon Overlay) -->
+                            <div class="position-relative overflow-hidden" style="height: 190px;">
                                 <img src="<?php echo $sport_img_url; ?>" class="w-100 h-100" style="object-fit: cover;" alt="<?php echo sanitize($row['nama_sukan']); ?>">
-                                <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6));"></div>
+                                <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.65));"></div>
                                 
-                                <!-- Ikon Sukan Overlaid -->
-                                <div class="position-absolute bottom-0 start-0 m-3 d-flex align-items-center gap-2">
-                                    <div class="bg-navy text-white rounded-3 p-2.5 d-flex align-items-center justify-content-center shadow" style="width: 46px; height: 46px; background-color: var(--navy-blue) !important;">
-                                        <i class="bi <?php echo sanitize($ikon_class); ?> fs-4" style="color: var(--gold) !important;"></i>
-                                    </div>
+                                <!-- Tajuk Sukan Overlaid -->
+                                <div class="position-absolute bottom-0 start-0 m-3">
                                     <h4 class="fw-bold text-white mb-0 fs-5 text-shadow"><?php echo sanitize($row['nama_sukan']); ?></h4>
                                 </div>
 
