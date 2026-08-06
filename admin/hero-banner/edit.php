@@ -49,8 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error_msg = "Saiz fail yang diupload melebihi had maksimum pelayan. Sila pilih fail imej yang lebih kecil.";
     } elseif (!verify_csrf_token($submitted_csrf)) {
         $error_msg = "Token keselamatan tidak sah.";
-    } elseif (empty($tajuk)) {
-        $error_msg = "Sila isi tajuk pengumuman.";
     } else {
         $image_filename = $banner['url_imej']; // Kekalkan imej lama
         
