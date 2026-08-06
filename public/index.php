@@ -158,7 +158,7 @@ if ($res_banners && $res_banners->num_rows > 0) {
                 <div class="bg-light p-3 rounded-circle d-inline-block border">
                     <span style="font-size: 5rem;">👤</span>
                 </div>
-                <h6 class="fw-bold text-dark mt-3 mb-0"><?php echo CHAIRMAN_NAME; ?></h6>
+                <h6 class="fw-bold text-dark mt-3 mb-0"><?php// echo CHAIRMAN_NAME; ?>Datu Awang Zamhari Bin Awang Mahmod</h6>
                 <p class="text-muted small mb-0"><?php echo CHAIRMAN_ROLE; ?></p>
             </div>
             <div class="col-md-9 border-start border-3 border-primary ps-md-5">

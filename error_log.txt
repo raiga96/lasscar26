@@ -45,6 +45,7 @@ Stack trace:
 [20-Jul-2026 14:16:45 UTC] PHP Stack trace:
 [20-Jul-2026 14:16:45 UTC] PHP   1. {main}() C:\wamp64\www\lasscar26\admin\bahagian\edit.php:0
 [20-Jul-2026 14:16:45 UTC] PHP   2. header($header = 'Location: index.php') C:\wamp64\www\lasscar26\admin\bahagian\edit.php:88
+<<<<<<< Updated upstream
 [06-Aug-2026 14:29:57 UTC] PHP Warning:  mysqli::__construct(): (HY000/2002): Connection refused in /Applications/MAMP/htdocs/lasscar26/includes/db.php on line 16
 [06-Aug-2026 14:29:57 UTC] Sambungan Database Gagal: Connection refused
 [06-Aug-2026 14:33:23 UTC] PHP Warning:  mysqli::__construct(): (HY000/2002): Connection refused in /Applications/MAMP/htdocs/lasscar26/includes/db.php on line 16
@@ -81,3 +82,10 @@ Stack trace:
 [06-Aug-2026 14:35:22 UTC] Sambungan Database Gagal: Connection refused
 [06-Aug-2026 14:35:23 UTC] PHP Warning:  mysqli::__construct(): (HY000/2002): Connection refused in /Applications/MAMP/htdocs/lasscar26/includes/db.php on line 16
 [06-Aug-2026 14:35:23 UTC] Sambungan Database Gagal: Connection refused
+=======
+[21-Jul-2026 01:15:43 Asia/Kuching] PHP Warning:  mysqli::__construct(): (HY000/2054): The server requested authentication method unknown to the client [auth_gssapi_client] in D:\Wnmp\nginx-bins\default\www\lasscar26\includes\db.php on line 16
+[21-Jul-2026 01:15:43 Asia/Kuching] Sambungan Database Gagal: The server requested authentication method unknown to the client [auth_gssapi_client]
+[06-Aug-2026 16:59:20 Asia/Kuching] PHP Warning:  Undefined array key "pasukan_b_id" in D:\Wnmp\nginx\www\lasscar26\public\index.php on line 247
+[06-Aug-2026 22:09:31 Asia/Kuching] PHP Warning:  Undefined array key "pasukan_b_id" in D:\Wnmp\nginx\www\lasscar26\public\index.php on line 247
+[06-Aug-2026 22:21:23 Asia/Kuching] PHP Warning:  Undefined array key "pasukan_b_id" in D:\Wnmp\nginx\www\lasscar26\public\index.php on line 247
+>>>>>>> Stashed changes
