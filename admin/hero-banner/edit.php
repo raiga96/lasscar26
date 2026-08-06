@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="mb-3">
                     <label for="tajuk" class="form-label fw-semibold">Tajuk Banner / Ucapan <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="tajuk" name="tajuk" value="<?php echo sanitize($banner['tajuk']); ?>" required>
+                    <input type="text" class="form-control" id="tajuk" name="tajuk" value="<?php echo sanitize($banner['tajuk']); ?>">
                     <div class="invalid-feedback">Sila masukkan tajuk banner.</div>
                 </div>
 

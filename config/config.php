@@ -26,7 +26,7 @@ define('TOURNAMENT_TITLE', 'Landas Sport Carnival 2026 (LASSCAR)');
 define('TOURNAMENT_THEME', 'Good Sports, Strong Unity');
 define('TOURNAMENT_DATE', '20 - 25 Julai 2026');
 define('TOURNAMENT_LOCATION', 'Stadium Perpaduan, Kuching, Sarawak');
-define('CHAIRMAN_NAME', 'Datu Abdullah bin Ahmad');
+define('CHAIRMAN_NAME', 'Datu Awang Zamhari Bin Awang Mahmood');
 define('CHAIRMAN_ROLE', 'Pengarah Jabatan Tanah dan Survei Sarawak');
 define('CHAIRMAN_WELCOME_MESSAGE', 'Selamat datang ke portal LASSCAR 2026. Kejohanan ini dibina untuk memperkukuh ukhuwah, membina semangat kesukanan yang tinggi, serta memelihara tahap integriti yang tinggi di kalangan seluruh kakitangan Jabatan Tanah dan Survei Sarawak di semua pejabat bahagian serta agensi jemputan. Selamat bertanding!');
 
