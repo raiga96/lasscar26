@@ -18,7 +18,7 @@ $draw_res = $conn->query("
 
 $data = $draw_res ? $draw_res->fetch_assoc() : null;
 
-if (!$data || $data['status_draw'] !== 'selesai') {
+if (!$data || !in_array($data['status_draw'], ['sedia', 'selesai'])) {
     http_response_code(403);
     echo json_encode([
         'status' => 'error',

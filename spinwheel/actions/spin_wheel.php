@@ -75,8 +75,8 @@ $micro_offset = (rand(-40, 40) / 10.0);
 $final_rotation_degrees = ($num_full_spins * 360.0) + $target_stop_angle + $micro_offset;
 $duration_ms = 7500; // 7.5 saat pusingan penuh yang mendebarkan
 
-// 4. Kemaskini status draw kepada 'selesai' untuk kunci keputusan
-$upd_stmt = $conn->prepare("UPDATE tbl_lasscar_draw SET status_draw = 'selesai' WHERE id = ?");
+// 4. Kemaskini status draw kepada 'sedia' supaya reveal sentiasa memulangkan penganjur MIRI
+$upd_stmt = $conn->prepare("UPDATE tbl_lasscar_draw SET status_draw = 'sedia' WHERE id = ?");
 $upd_stmt->bind_param("i", $draw['id']);
 $upd_stmt->execute();
 $upd_stmt->close();
