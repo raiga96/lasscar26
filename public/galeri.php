@@ -59,6 +59,13 @@ $album_res = $conn->query("SELECT DISTINCT album FROM tbl_galeri WHERE album IS 
             <strong>Kredensial Google Drive Belum Dihubungkan!</strong><br>
             <span class="small text-muted">Folder dan gambar akan muncul secara automatik selepas fail <code>config/gdrive-service-account.json</code> diletakkan dan folder Google Drive dikongsi (*Share*) dengan Service Account.</span>
         </div>
+    <?php elseif (($result === null || $result->num_rows == 0) && ($album_res === null || $album_res->num_rows == 0)): ?>
+        <div class="alert alert-info border-0 shadow-sm rounded-3 p-3 mb-4 text-center">
+            <i class="bi bi-check-circle-fill fs-4 text-info d-block mb-1"></i>
+            <strong>Google Drive Berjaya Dihubungkan!</strong><br>
+            <span class="small text-muted">Kredensial sah. Jika folder/gambar belum muncul, sila pastikan anda telah **Kongsi (Share)** folder Google Drive anda dengan emel Service Account:<br>
+            <code class="user-select-all fw-bold bg-white text-dark px-2 py-1 rounded border d-inline-block mt-1">drive-service-account@lasscar26.iam.gserviceaccount.com</code></span>
+        </div>
     <?php endif; ?>
     
     <!-- Butang Penapis Album -->
