@@ -13,9 +13,14 @@ if (!defined('DB_HOST')) {
 mysqli_report(MYSQLI_REPORT_OFF);
 
 // Mulakan sambungan MySQLi
-$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+$conn = @new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
-// Semak status sambungan
+// Fallback sambungan MAMP local jika sambungan utama gagal
+if ($conn->connect_error) {
+    $conn = @new mysqli('localhost', 'root', 'root', DB_NAME);
+}
+
+// Semak status sambungan akhir
 if ($conn->connect_error) {
     // Catat ke log ralat
     error_log("Sambungan Database Gagal: " . $conn->connect_error);
