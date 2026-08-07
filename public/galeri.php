@@ -92,7 +92,7 @@ if ($s_res) {
         <div class="row g-2">
             <!-- Butang Folder Semua -->
             <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                <a href="galeri.php" class="card text-decoration-none border-0 shadow-sm rounded-3 p-2 text-center h-100 style-folder-card <?php echo ($filter_album === null) ? 'bg-navy text-white' : 'bg-white text-dark'; ?>">
+                <a href="galeri.php" class="card text-decoration-none p-2 text-center h-100 style-folder-card <?php echo ($filter_album === null) ? 'card-selected' : 'card-unselected'; ?>">
                     <div class="fs-3 mb-1"><i class="bi bi-images"></i></div>
                     <div class="fw-bold small text-truncate">Semua Media</div>
                     <div class="small opacity-75" style="font-size: 0.75rem;">Tunjukkan Semua</div>
@@ -106,7 +106,7 @@ if ($s_res) {
                 ?>
                 <div class="col-6 col-sm-4 col-md-3 col-lg-2">
                     <a href="galeri.php?album=<?php echo urlencode($sf['nama_sukan']); ?>" 
-                       class="card text-decoration-none border-0 shadow-sm rounded-3 p-2 text-center h-100 style-folder-card <?php echo $is_selected ? 'bg-navy text-white' : 'bg-white text-dark'; ?>">
+                       class="card text-decoration-none p-2 text-center h-100 style-folder-card <?php echo $is_selected ? 'card-selected' : 'card-unselected'; ?>">
                         <div class="fs-3 mb-1 text-gold">
                             <i class="bi <?php echo sanitize($sf['ikon'] ?: 'bi-folder-fill'); ?>"></i>
                         </div>
@@ -191,7 +191,7 @@ if ($s_res) {
         <div class="modal-content bg-dark text-white border-0 shadow-lg rounded-4 overflow-hidden">
             <div class="modal-header border-0 pb-0">
                 <div>
-                    <h5 class="modal-title fw-bold id-modal-title" id="galleryModalTitle">Papar Media</h5>
+                    <h5 class="modal-title fw-bold text-white fs-6" id="galleryModalTitle">Papar Media</h5>
                     <span class="badge bg-gold text-dark small mt-1" id="galleryModalAlbum">Album</span>
                 </div>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -201,11 +201,11 @@ if ($s_res) {
                     <!-- Content injected via JS -->
                 </div>
             </div>
-            <div class="modal-footer border-0 pt-0 d-flex justify-content-between">
-                <a id="galleryModalDriveBtn" href="#" target="_blank" class="btn btn-sm btn-outline-light d-none">
+            <div class="modal-footer border-0 pt-0 d-flex justify-content-between align-items-center">
+                <a id="galleryModalDriveBtn" href="#" target="_blank" class="btn btn-gold btn-sm px-3 fw-semibold">
                     <i class="bi bi-google me-1"></i> Buka di Google Drive
                 </a>
-                <button type="button" class="btn btn-sm btn-secondary px-4 ms-auto" data-bs-dismiss="modal">Tutup</button>
+                <button type="button" class="btn btn-sm btn-outline-light px-4 ms-auto" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
@@ -215,12 +215,39 @@ if ($s_res) {
     .gallery-grid-item:hover .hover-overlay-show {
         opacity: 1 !important;
     }
-    .style-card-hover, .style-folder-card {
-        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    .style-card-hover {
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
-    .style-card-hover:hover, .style-folder-card:hover {
+    .style-card-hover:hover {
         transform: translateY(-4px);
         box-shadow: 0 8px 16px rgba(0,0,0,0.12) !important;
+    }
+    .style-folder-card {
+        transition: all 0.25s ease;
+        border-radius: 10px !important;
+    }
+    .style-folder-card.card-unselected {
+        background-color: #ffffff !important;
+        color: #1e293b !important;
+        border: 1px solid #cbd5e1 !important;
+    }
+    .style-folder-card.card-unselected:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.08) !important;
+        border-color: var(--gold) !important;
+    }
+    .style-folder-card.card-selected {
+        background-color: var(--navy-blue) !important;
+        color: #ffffff !important;
+        border: 2px solid var(--gold) !important;
+        box-shadow: 0 6px 14px rgba(10, 25, 47, 0.25) !important;
+    }
+    .style-folder-card.card-selected .text-gold {
+        color: var(--gold) !important;
+    }
+    .style-folder-card.card-selected .opacity-75 {
+        color: #e2e8f0 !important;
+        opacity: 0.9 !important;
     }
 </style>
 
@@ -229,20 +256,19 @@ function openGalleryModal(type, url, title, album, gdriveLink) {
     document.getElementById('galleryModalTitle').innerText = title || 'Media LASSCAR 2026';
     document.getElementById('galleryModalAlbum').innerText = album || 'Umum';
     
+    const targetLink = (gdriveLink && gdriveLink.length > 5) ? gdriveLink : url;
     const container = document.getElementById('galleryModalMediaContainer');
+    
     if (type === 'imej') {
-        container.innerHTML = `<img src="${url}" class="img-fluid rounded-3" style="max-height: 65vh; object-fit: contain;" alt="${title}">`;
+        container.innerHTML = `<a href="${targetLink}" target="_blank" title="Klik untuk buka di Google Drive">
+            <img src="${url}" class="img-fluid rounded-3 style-card-hover" style="max-height: 65vh; object-fit: contain; cursor: pointer;" alt="${title}">
+        </a>`;
     } else {
         container.innerHTML = `<video controls autoplay class="w-100 rounded-3" style="max-height: 65vh;"><source src="${url}" type="video/mp4"></video>`;
     }
     
     const driveBtn = document.getElementById('galleryModalDriveBtn');
-    if (gdriveLink && gdriveLink.length > 5) {
-        driveBtn.href = gdriveLink;
-        driveBtn.classList.remove('d-none');
-    } else {
-        driveBtn.classList.add('d-none');
-    }
+    driveBtn.href = targetLink;
     
     const modal = new bootstrap.Modal(document.getElementById('galleryModal'));
     modal.show();
