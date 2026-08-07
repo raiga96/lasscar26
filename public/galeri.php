@@ -10,7 +10,7 @@ require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/gdrive_sync.php';
 
 // Jalankan penyegerakan automatik Google Drive (dikawal oleh TTL 3 minit)
-sync_gdrive_gallery($conn);
+$gdrive_sync_status = sync_gdrive_gallery($conn);
 
 // Ambil parameter tapisan album
 $filter_album = isset($_GET['album']) && $_GET['album'] !== '' ? $_GET['album'] : null;
@@ -52,6 +52,14 @@ $album_res = $conn->query("SELECT DISTINCT album FROM tbl_galeri WHERE album IS 
 </div>
 
 <div class="container mb-5">
+    
+    <?php if (!file_exists(GDRIVE_SERVICE_ACCOUNT_FILE)): ?>
+        <div class="alert alert-warning border-0 shadow-sm rounded-3 p-3 mb-4 text-center">
+            <i class="bi bi-exclamation-triangle-fill fs-4 text-warning d-block mb-1"></i>
+            <strong>Kredensial Google Drive Belum Dihubungkan!</strong><br>
+            <span class="small text-muted">Folder dan gambar akan muncul secara automatik selepas fail <code>config/gdrive-service-account.json</code> diletakkan dan folder Google Drive dikongsi (*Share*) dengan Service Account.</span>
+        </div>
+    <?php endif; ?>
     
     <!-- Butang Penapis Album -->
     <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
