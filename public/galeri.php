@@ -13,18 +13,19 @@ require_once __DIR__ . '/../includes/gdrive_sync.php';
 $gdrive_sync_status = sync_gdrive_gallery($conn);
 
 // Ambil parameter tapisan album
-$filter_album = isset($_GET['album']) && $_GET['album'] !== '' ? $_GET['album'] : null;
+$filter_album = isset($_GET['album']) && $_GET['album'] !== '' ? trim($_GET['album']) : null;
 
-// Bina query dinamik
+// Bina query dinamik (Sokong carian tak peka huruf besar/kecil & nama sukan)
 $sql = "SELECT g.*, s.nama_sukan FROM tbl_galeri g 
         LEFT JOIN tbl_sukan s ON g.sukan_id = s.id";
 $params = [];
 $types = "";
 
 if ($filter_album !== null) {
-    $sql .= " WHERE g.album = ?";
-    $params[] = $filter_album;
-    $types .= "s";
+    $sql .= " WHERE (LOWER(g.album) = LOWER(?) OR LOWER(s.nama_sukan) = LOWER(?) OR LOWER(g.album) LIKE LOWER(?))";
+    $like_param = '%' . $filter_album . '%';
+    $params = [$filter_album, $filter_album, $like_param];
+    $types = "sss";
 }
 $sql .= " ORDER BY g.dicipta_pada DESC";
 
@@ -39,12 +40,26 @@ if ($stmt) {
     $result = null;
 }
 
-// Ambil senarai album unik untuk butang penapis
-$album_res = $conn->query("SELECT DISTINCT album FROM tbl_galeri WHERE album IS NOT NULL AND album != '' ORDER BY album ASC");
+// Ambil senarai 10 Sukan & Bilangan Gambar Google Drive
+$sports_folders = [];
+$s_res = $conn->query("
+    SELECT s.id, s.nama_sukan, s.ikon,
+           COUNT(g.id) AS total_media
+    FROM tbl_sukan s
+    LEFT JOIN tbl_galeri g ON (g.sukan_id = s.id OR LOWER(g.album) = LOWER(s.nama_sukan) OR LOWER(g.album) LIKE CONCAT('%', LOWER(s.nama_sukan), '%'))
+    WHERE s.status = 'aktif'
+    GROUP BY s.id, s.nama_sukan, s.ikon
+    ORDER BY s.nama_sukan ASC
+");
+if ($s_res) {
+    while ($s_row = $s_res->fetch_assoc()) {
+        $sports_folders[] = $s_row;
+    }
+}
 ?>
 
 <!-- Header -->
-<div class="py-4 bg-navy text-white text-center mb-5" style="background-color: var(--navy-blue); border-bottom: 4px solid var(--gold);">
+<div class="py-4 bg-navy text-white text-center mb-4" style="background-color: var(--navy-blue); border-bottom: 4px solid var(--gold);">
     <div class="container">
         <h2 class="fw-bold mb-1">Galeri Media LASSCAR 2026</h2>
         <p class="lead small mb-0">Himpunan imej dan video kejohanan yang disegera secara automatik dari Google Drive & jurugambar rasmi.</p>
@@ -59,36 +74,52 @@ $album_res = $conn->query("SELECT DISTINCT album FROM tbl_galeri WHERE album IS 
             <strong>Kredensial Google Drive Belum Dihubungkan!</strong><br>
             <span class="small text-muted">Folder dan gambar akan muncul secara automatik selepas fail <code>config/gdrive-service-account.json</code> diletakkan dan folder Google Drive dikongsi (*Share*) dengan Service Account.</span>
         </div>
-    <?php elseif (isset($gdrive_sync_status['success']) && $gdrive_sync_status['success'] === false && strpos($gdrive_sync_status['message'] ?? '', 'Google Drive API has not been used') !== false): ?>
-        <div class="alert alert-danger border-0 shadow-sm rounded-3 p-3 mb-4 text-center">
-            <i class="bi bi-gear-fill fs-4 text-danger d-block mb-1"></i>
-            <strong>Google Drive API Belum Diaktifkan di Google Cloud Console!</strong><br>
-            <span class="small text-muted mb-2 d-block">Sila klik butang di bawah untuk mengaktifkan (*Enable*) Google Drive API pada projek Google Cloud anda:</span>
-            <a href="https://console.developers.google.com/apis/api/drive.googleapis.com/overview?project=704719706488" target="_blank" class="btn btn-sm btn-danger px-4 fw-medium">
-                <i class="bi bi-box-arrow-up-right me-1"></i> Aktifkan Google Drive API Sekarang (Click Enable)
-            </a>
-        </div>
-    <?php elseif (($result === null || $result->num_rows == 0) && ($album_res === null || $album_res->num_rows == 0)): ?>
-        <div class="alert alert-info border-0 shadow-sm rounded-3 p-3 mb-4 text-center">
-            <i class="bi bi-check-circle-fill fs-4 text-info d-block mb-1"></i>
-            <strong>Google Drive Berjaya Dihubungkan!</strong><br>
-            <span class="small text-muted">Kredensial sah. Sila pastikan anda telah **Kongsi (Share)** folder Google Drive anda dengan emel Service Account:<br>
-            <code class="user-select-all fw-bold bg-white text-dark px-2 py-1 rounded border d-inline-block mt-1">drive-service-account@lasscar26.iam.gserviceaccount.com</code></span>
-        </div>
     <?php endif; ?>
-    
-    <!-- Butang Penapis Album -->
-    <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
-        <a href="galeri.php" class="btn btn-sm <?php echo ($filter_album === null) ? 'btn-navy' : 'btn-outline-secondary'; ?> px-3 fw-medium">
-            Tunjukkan Semua
-        </a>
-        <?php if ($album_res && $album_res->num_rows > 0): ?>
-            <?php while ($alb = $album_res->fetch_assoc()): ?>
-                <a href="galeri.php?album=<?php echo urlencode($alb['album']); ?>" class="btn btn-sm <?php echo ($filter_album === $alb['album']) ? 'btn-navy' : 'btn-outline-secondary'; ?> px-3 fw-medium">
-                    <?php echo sanitize($alb['album']); ?>
+
+    <!-- Section Folder Sukan Google Drive (10 Folder Sukan) -->
+    <div class="mb-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h5 class="fw-bold text-dark mb-0">
+                <i class="bi bi-folder-fill text-gold me-2"></i> Folder Sukan Google Drive (10 Sukan)
+            </h5>
+            <?php if ($filter_album !== null): ?>
+                <a href="galeri.php" class="btn btn-sm btn-outline-navy fw-medium">
+                    <i class="bi bi-x-circle me-1"></i> Kosongkan Penapis
                 </a>
-            <?php endwhile; ?>
-        <?php endif; ?>
+            <?php endif; ?>
+        </div>
+
+        <div class="row g-2">
+            <!-- Butang Folder Semua -->
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                <a href="galeri.php" class="card text-decoration-none border-0 shadow-sm rounded-3 p-2 text-center h-100 style-folder-card <?php echo ($filter_album === null) ? 'bg-navy text-white' : 'bg-white text-dark'; ?>">
+                    <div class="fs-3 mb-1"><i class="bi bi-images"></i></div>
+                    <div class="fw-bold small text-truncate">Semua Media</div>
+                    <div class="small opacity-75" style="font-size: 0.75rem;">Tunjukkan Semua</div>
+                </a>
+            </div>
+            
+            <!-- 10 Folder Sukan -->
+            <?php foreach ($sports_folders as $sf): ?>
+                <?php 
+                $is_selected = ($filter_album !== null && (strcasecmp($filter_album, $sf['nama_sukan']) === 0 || stripos($sf['nama_sukan'], $filter_album) !== false));
+                ?>
+                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                    <a href="galeri.php?album=<?php echo urlencode($sf['nama_sukan']); ?>" 
+                       class="card text-decoration-none border-0 shadow-sm rounded-3 p-2 text-center h-100 style-folder-card <?php echo $is_selected ? 'bg-navy text-white' : 'bg-white text-dark'; ?>">
+                        <div class="fs-3 mb-1 text-gold">
+                            <i class="bi <?php echo sanitize($sf['ikon'] ?: 'bi-folder-fill'); ?>"></i>
+                        </div>
+                        <div class="fw-bold small text-truncate" title="<?php echo sanitize($sf['nama_sukan']); ?>">
+                            <?php echo sanitize($sf['nama_sukan']); ?>
+                        </div>
+                        <div class="small opacity-75" style="font-size: 0.75rem;">
+                            <?php echo $sf['total_media']; ?> Gambar
+                        </div>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
     </div>
 
     <!-- Grid Media -->
@@ -182,12 +213,12 @@ $album_res = $conn->query("SELECT DISTINCT album FROM tbl_galeri WHERE album IS 
     .gallery-grid-item:hover .hover-overlay-show {
         opacity: 1 !important;
     }
-    .style-card-hover {
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    .style-card-hover, .style-folder-card {
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
     }
-    .style-card-hover:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+    .style-card-hover:hover, .style-folder-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.12) !important;
     }
 </style>
 
