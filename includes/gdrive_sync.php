@@ -118,7 +118,7 @@ function sync_gdrive_gallery($conn, $folder_id = null, $force = false) {
         if (!isset($existing_records[$file_id])) {
             // REKOD BARU -> INSERT
             if ($stmt_insert) {
-                $stmt_insert->bind_param("ssssssssis", $file_name, $file_id, $item_folder_id, $thumb_url, $view_url, $modified_time, $album_name, $matched_sukan_id, $created_time);
+                $stmt_insert->bind_param("sssssssis", $file_name, $file_id, $item_folder_id, $thumb_url, $view_url, $modified_time, $album_name, $matched_sukan_id, $created_time);
                 $stmt_insert->execute();
                 $added_count++;
             }
