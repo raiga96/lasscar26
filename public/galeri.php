@@ -128,8 +128,8 @@ if ($s_res) {
             <?php while ($row = $result->fetch_assoc()): ?>
                 <?php 
                 if (!empty($row['is_gdrive'])) {
-                    $thumb_url = !empty($row['gdrive_thumbnail_url']) ? $row['gdrive_thumbnail_url'] : BASE_URL . 'public/gdrive-image.php?id=' . $row['gdrive_file_id'];
-                    $full_url  = !empty($row['gdrive_thumbnail_url']) ? $row['gdrive_thumbnail_url'] : BASE_URL . 'public/gdrive-image.php?id=' . $row['gdrive_file_id'];
+                    $thumb_url = BASE_URL . 'public/gdrive-image.php?id=' . $row['gdrive_file_id'];
+                    $full_url  = BASE_URL . 'public/gdrive-image.php?id=' . $row['gdrive_file_id'];
                     $gdrive_link = $row['gdrive_view_url'] ?: "https://drive.google.com/file/d/" . $row['gdrive_file_id'] . "/view";
                 } else {
                     $thumb_url = BASE_URL . 'assets/uploads/galeri/' . $row['url_fail'];
