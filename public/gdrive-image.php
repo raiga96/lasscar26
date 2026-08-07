@@ -37,6 +37,7 @@ $content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 curl_close($ch);
 
 if ($http_code === 200 && $data) {
+    if (ob_get_length()) ob_clean();
     // Sembunyikan header PHP & kembalikan cache pelayar 24 jam
     header("Content-Type: " . ($content_type ?: "image/jpeg"));
     header("Content-Length: " . strlen($data));
