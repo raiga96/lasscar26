@@ -1,4 +1,6 @@
 config/config.php
+config/gdrive-service-account.json
+config/gdrive_last_sync.txt
 
 error_log.txt
 
