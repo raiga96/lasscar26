@@ -381,21 +381,32 @@ if ($res_banners && $res_banners->num_rows > 0) {
         
         <div class="row g-3">
             <?php
-            $query_g = "SELECT * FROM tbl_galeri WHERE jenis_fail = 'imej' ORDER BY RAND() LIMIT 4";
+            $query_g = "SELECT * FROM tbl_galeri WHERE jenis_fail = 'imej' ORDER BY dicipta_pada DESC LIMIT 4";
             $res_g = $conn->query($query_g);
 
             if ($res_g && $res_g->num_rows > 0):
                 while ($row = $res_g->fetch_assoc()):
-                    $img_url = BASE_URL . 'assets/uploads/galeri/' . $row['url_fail'];
+                    if (!empty($row['is_gdrive'])) {
+                        $img_url = "https://lh3.googleusercontent.com/d/" . $row['gdrive_file_id'] . "=w800";
+                        $gdrive_link = $row['gdrive_view_url'] ?: "https://drive.google.com/file/d/" . $row['gdrive_file_id'] . "/view";
+                    } else {
+                        $img_url = BASE_URL . 'assets/uploads/galeri/' . $row['url_fail'];
+                        $gdrive_link = BASE_URL . 'public/galeri.php';
+                    }
                     ?>
                     <div class="col-6 col-md-3">
-                        <div class="gallery-grid-item position-relative bg-dark rounded-4 overflow-hidden shadow-sm card-hover-effect" style="height: 220px;" 
-                             data-type="imej" data-url="<?php echo $img_url; ?>" data-title="<?php echo sanitize($row['tajuk']); ?>" data-album="<?php echo sanitize($row['album']); ?>">
-                            <img src="<?php echo $img_url; ?>" class="w-100 h-100" style="object-fit: cover;" alt="<?php echo sanitize($row['tajuk']); ?>">
-                            <div class="position-absolute bottom-0 start-0 m-3">
-                                <span class="badge bg-dark bg-opacity-75 text-white rounded-pill px-3 py-1 fs-7"><?php echo sanitize($row['album'] ?: 'Hari 1'); ?></span>
+                        <a href="<?php echo sanitize($gdrive_link); ?>" target="_blank" class="text-decoration-none">
+                            <div class="gallery-grid-item position-relative bg-dark rounded-4 overflow-hidden shadow-sm card-hover-effect" style="height: 220px; cursor: pointer;">
+                                <img src="<?php echo sanitize($img_url); ?>" loading="lazy" class="w-100 h-100" style="object-fit: cover;" alt="<?php echo sanitize($row['tajuk']); ?>"
+                                     onerror="this.onerror=null; this.src='<?php echo BASE_URL . 'public/gdrive-image.php?id=' . ($row['gdrive_file_id'] ?? ''); ?>'">
+                                <div class="position-absolute bottom-0 start-0 m-3 z-1">
+                                    <span class="badge bg-navy text-white rounded-pill px-3 py-1 fs-7 shadow-sm"><?php echo sanitize($row['album'] ?: 'Umum'); ?></span>
+                                </div>
+                                <div class="position-absolute top-0 start-0 w-100 h-100 bg-black bg-opacity-40 d-flex align-items-center justify-content-center opacity-0 hover-overlay-show" style="transition: opacity 0.2s;">
+                                    <span class="text-white fw-medium small bg-dark bg-opacity-75 px-3 py-1 rounded-pill"><i class="bi bi-box-arrow-up-right me-1"></i> Buka Foto</span>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 <?php 
                 endwhile;
