@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function() {
  * Persediaan Lightbox untuk Galeri Media
  */
 function setupGalleryLightbox() {
-    const galleryItems = document.querySelectorAll('.gallery-grid-item');
+    const galleryItems = document.querySelectorAll('.gallery-grid-item[data-type]');
     if (galleryItems.length === 0) return;
 
     // Cipta elemen Modal Lightbox secara dinamik jika tiada dalam HTML
