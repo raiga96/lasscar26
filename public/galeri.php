@@ -202,6 +202,9 @@ if ($s_res) {
                 </div>
             </div>
             <div class="modal-footer border-0 pt-0 d-flex justify-content-between align-items-center">
+                <a id="galleryModalDriveBtn" href="#" target="_blank" class="btn btn-gold btn-sm px-3 fw-semibold">
+                    <i class="bi bi-google me-1"></i> Buka di Google Drive
+                </a>
                 <button type="button" class="btn btn-sm btn-outline-light px-4 ms-auto" data-bs-dismiss="modal">Tutup</button>
             </div>
         </div>
