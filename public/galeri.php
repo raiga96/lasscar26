@@ -59,11 +59,20 @@ $album_res = $conn->query("SELECT DISTINCT album FROM tbl_galeri WHERE album IS 
             <strong>Kredensial Google Drive Belum Dihubungkan!</strong><br>
             <span class="small text-muted">Folder dan gambar akan muncul secara automatik selepas fail <code>config/gdrive-service-account.json</code> diletakkan dan folder Google Drive dikongsi (*Share*) dengan Service Account.</span>
         </div>
+    <?php elseif (isset($gdrive_sync_status['success']) && $gdrive_sync_status['success'] === false && strpos($gdrive_sync_status['message'] ?? '', 'Google Drive API has not been used') !== false): ?>
+        <div class="alert alert-danger border-0 shadow-sm rounded-3 p-3 mb-4 text-center">
+            <i class="bi bi-gear-fill fs-4 text-danger d-block mb-1"></i>
+            <strong>Google Drive API Belum Diaktifkan di Google Cloud Console!</strong><br>
+            <span class="small text-muted mb-2 d-block">Sila klik butang di bawah untuk mengaktifkan (*Enable*) Google Drive API pada projek Google Cloud anda:</span>
+            <a href="https://console.developers.google.com/apis/api/drive.googleapis.com/overview?project=704719706488" target="_blank" class="btn btn-sm btn-danger px-4 fw-medium">
+                <i class="bi bi-box-arrow-up-right me-1"></i> Aktifkan Google Drive API Sekarang (Click Enable)
+            </a>
+        </div>
     <?php elseif (($result === null || $result->num_rows == 0) && ($album_res === null || $album_res->num_rows == 0)): ?>
         <div class="alert alert-info border-0 shadow-sm rounded-3 p-3 mb-4 text-center">
             <i class="bi bi-check-circle-fill fs-4 text-info d-block mb-1"></i>
             <strong>Google Drive Berjaya Dihubungkan!</strong><br>
-            <span class="small text-muted">Kredensial sah. Jika folder/gambar belum muncul, sila pastikan anda telah **Kongsi (Share)** folder Google Drive anda dengan emel Service Account:<br>
+            <span class="small text-muted">Kredensial sah. Sila pastikan anda telah **Kongsi (Share)** folder Google Drive anda dengan emel Service Account:<br>
             <code class="user-select-all fw-bold bg-white text-dark px-2 py-1 rounded border d-inline-block mt-1">drive-service-account@lasscar26.iam.gserviceaccount.com</code></span>
         </div>
     <?php endif; ?>

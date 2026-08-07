@@ -41,12 +41,13 @@ function sync_gdrive_gallery($conn, $folder_id = null, $force = false) {
 
     // Ambil senarai fail dari Google Drive API v3 (Imbasan Rekursif Subfolder & Sukan)
     $drive_files = fetch_gdrive_folder_files($folder_id);
-    if ($drive_files === false) {
+    if ($drive_files === false || !empty($GLOBALS['gdrive_last_error'])) {
+        $err_msg = $GLOBALS['gdrive_last_error'] ?? 'Gagal mengambil fail dari Google Drive. Pastikan Service Account JSON & Folder ID adalah betul.';
         return [
             'success' => false,
             'synced'  => false,
             'reason'  => 'api_error',
-            'message' => 'Gagal mengambil fail dari Google Drive. Pastikan Service Account JSON & Folder ID adalah betul.'
+            'message' => $err_msg
         ];
     }
 

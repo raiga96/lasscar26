@@ -152,6 +152,12 @@ function fetch_gdrive_all_folders_recursive($token, $root_folder_id) {
             curl_close($ch);
 
             if ($http_code !== 200 || !$response) {
+                $res_data = json_decode($response, true);
+                if (isset($res_data['error']['message'])) {
+                    $GLOBALS['gdrive_last_error'] = $res_data['error']['message'];
+                } else {
+                    $GLOBALS['gdrive_last_error'] = "GDrive API Error HTTP {$http_code}";
+                }
                 break;
             }
 
