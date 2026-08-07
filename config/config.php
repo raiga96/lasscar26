@@ -44,3 +44,9 @@ define('ALLOWED_VIDEO_MIMES', ['video/mp4', 'video/webm']);
 define('UPLOAD_DIR_LOGO', __DIR__ . '/../assets/uploads/logo-bahagian/');
 define('UPLOAD_DIR_GALERI', __DIR__ . '/../assets/uploads/galeri/');
 define('UPLOAD_DIR_HERO', __DIR__ . '/../assets/uploads/hero/');
+
+// Konfigurasi Google Drive API v3
+define('GDRIVE_SERVICE_ACCOUNT_FILE', __DIR__ . '/gdrive-service-account.json');
+define('GDRIVE_FOLDER_ID', getenv('GDRIVE_FOLDER_ID') ?: '1_SAMPLE_GDRIVE_FOLDER_ID'); // ID Folder Google Drive Utama
+define('GDRIVE_SYNC_TTL', 180); // 3 minit selang masa penyegerakan automatik (dalam saat)
+

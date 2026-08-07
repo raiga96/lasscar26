@@ -176,13 +176,20 @@ CREATE TABLE IF NOT EXISTS tbl_galeri (
     tajuk VARCHAR(200) NULL,
     jenis_fail ENUM('imej','video') NOT NULL DEFAULT 'imej',
     url_fail VARCHAR(255) NOT NULL,
+    gdrive_file_id VARCHAR(100) NULL,
+    gdrive_folder_id VARCHAR(100) NULL,
+    gdrive_thumbnail_url TEXT NULL,
+    gdrive_view_url TEXT NULL,
+    gdrive_modified_time DATETIME NULL,
+    is_gdrive TINYINT(1) NOT NULL DEFAULT 0,
     album VARCHAR(100) NULL,                        -- cth: 'Hari 1', 'Badminton', 'Majlis Penutup'
     sukan_id INT UNSIGNED NULL,
     upload_oleh INT UNSIGNED NULL,
     dicipta_pada TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (sukan_id) REFERENCES tbl_sukan(id) ON DELETE SET NULL,
     FOREIGN KEY (upload_oleh) REFERENCES tbl_pengguna(id) ON DELETE SET NULL,
-    INDEX idx_album (album)
+    INDEX idx_album (album),
+    UNIQUE INDEX idx_gdrive_file_id (gdrive_file_id)
 ) ENGINE=InnoDB;
 
 -- ------------------------------------------------

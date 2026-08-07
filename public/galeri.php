@@ -1,12 +1,16 @@
 <?php
 /**
  * Galeri Media Kejohanan - Portal Awam SukanJTS Sarawak
- * Memaparkan imej & video perlawanan dengan penapis album serta paparan lightbox premium.
+ * Memaparkan imej & video perlawanan dengan penapis album serta penyegerakan automatik Google Drive.
  */
 
 $page_title = "Galeri Gambar & Video";
 require_once __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../includes/db.php';
+require_once __DIR__ . '/../includes/gdrive_sync.php';
+
+// Jalankan penyegerakan automatik Google Drive (dikawal oleh TTL 3 minit)
+sync_gdrive_gallery($conn);
 
 // Ambil parameter tapisan album
 $filter_album = isset($_GET['album']) && $_GET['album'] !== '' ? $_GET['album'] : null;
@@ -43,11 +47,11 @@ $album_res = $conn->query("SELECT DISTINCT album FROM tbl_galeri WHERE album IS 
 <div class="py-4 bg-navy text-white text-center mb-5" style="background-color: var(--navy-blue); border-bottom: 4px solid var(--gold);">
     <div class="container">
         <h2 class="fw-bold mb-1">Galeri Media LASSCAR 2026</h2>
-        <p class="lead small mb-0">Himpunan imej dan video kejohanan yang dirakam sepanjang pertandingan berlangsung.</p>
+        <p class="lead small mb-0">Himpunan imej dan video kejohanan yang disegera secara automatik dari Google Drive & jurugambar rasmi.</p>
     </div>
 </div>
 
-<div class="container">
+<div class="container mb-5">
     
     <!-- Butang Penapis Album -->
     <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
@@ -68,46 +72,55 @@ $album_res = $conn->query("SELECT DISTINCT album FROM tbl_galeri WHERE album IS 
         <?php if ($result && $result->num_rows > 0): ?>
             <?php while ($row = $result->fetch_assoc()): ?>
                 <?php 
-                $file_url = BASE_URL . 'assets/uploads/galeri/' . $row['url_fail'];
+                if (!empty($row['is_gdrive'])) {
+                    $thumb_url = !empty($row['gdrive_thumbnail_url']) ? $row['gdrive_thumbnail_url'] : BASE_URL . 'public/gdrive-image.php?id=' . $row['gdrive_file_id'];
+                    $full_url  = !empty($row['gdrive_thumbnail_url']) ? $row['gdrive_thumbnail_url'] : BASE_URL . 'public/gdrive-image.php?id=' . $row['gdrive_file_id'];
+                    $gdrive_link = $row['gdrive_view_url'] ?: "https://drive.google.com/file/d/" . $row['gdrive_file_id'] . "/view";
+                } else {
+                    $thumb_url = BASE_URL . 'assets/uploads/galeri/' . $row['url_fail'];
+                    $full_url  = $thumb_url;
+                    $gdrive_link = '';
+                }
                 ?>
                 <div class="col-6 col-sm-6 col-md-4 col-lg-3">
                     <!-- Grid Item (Clickable for Lightbox) -->
-                    <div class="gallery-grid-item position-relative bg-dark shadow-sm rounded-3 overflow-hidden" 
-                         style="height: 220px;"
-                         data-type="<?php echo $row['jenis_fail']; ?>"
-                         data-url="<?php echo $file_url; ?>"
-                         data-title="<?php echo sanitize($row['tajuk']); ?>"
-                         data-album="<?php echo sanitize($row['album']); ?>">
+                    <div class="gallery-grid-item position-relative bg-dark shadow-sm rounded-4 overflow-hidden style-card-hover" 
+                         style="height: 220px; cursor: pointer;"
+                         onclick="openGalleryModal('<?php echo $row['jenis_fail']; ?>', '<?php echo sanitize($full_url); ?>', '<?php echo sanitize($row['tajuk']); ?>', '<?php echo sanitize($row['album']); ?>', '<?php echo sanitize($gdrive_link); ?>')">
                          
                         <?php if ($row['jenis_fail'] === 'imej'): ?>
-                            <img src="<?php echo $file_url; ?>" class="w-100 h-100" style="object-fit: cover;" alt="<?php echo sanitize($row['tajuk']); ?>">
+                            <img src="<?php echo sanitize($thumb_url); ?>" loading="lazy" class="w-100 h-100" style="object-fit: cover;" alt="<?php echo sanitize($row['tajuk']); ?>"
+                                 onerror="this.src='<?php echo BASE_URL . 'public/gdrive-image.php?id=' . ($row['gdrive_file_id'] ?? ''); ?>'">
                         <?php else: ?>
                             <video class="w-100 h-100" style="object-fit: cover;" preload="metadata">
-                                <source src="<?php echo $file_url; ?>" type="video/mp4">
+                                <source src="<?php echo sanitize($thumb_url); ?>" type="video/mp4">
                             </video>
                             <div class="position-absolute top-50 start-50 translate-middle text-white bg-dark bg-opacity-75 rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
                                 <i class="bi bi-play-fill fs-4"></i>
                             </div>
                         <?php endif; ?>
                         
-                        <!-- Album & Sukan Tag Overlay -->
+                        <!-- Album & Tag Overlay -->
                         <div class="position-absolute bottom-0 start-0 m-2 z-1">
-                            <span class="badge bg-navy text-white small"><?php echo sanitize($row['album'] ?: 'Umum'); ?></span>
-                            <?php if ($row['nama_sukan']): ?>
-                                <span class="badge bg-gold text-dark small"><?php echo sanitize($row['nama_sukan']); ?></span>
+                            <span class="badge bg-navy text-white small shadow-sm"><?php echo sanitize($row['album'] ?: 'Umum'); ?></span>
+                            <?php if (!empty($row['is_gdrive'])): ?>
+                                <span class="badge bg-primary text-white small shadow-sm"><i class="bi bi-google"></i> Drive</span>
+                            <?php endif; ?>
+                            <?php if (!empty($row['nama_sukan'])): ?>
+                                <span class="badge bg-gold text-dark small shadow-sm"><?php echo sanitize($row['nama_sukan']); ?></span>
                             <?php endif; ?>
                         </div>
                         
                         <!-- Hover Overlay Effect -->
-                        <div class="position-absolute top-0 start-0 w-100 h-100 bg-black bg-opacity-40 d-flex align-items-center justify-content-center opacity-0 hover-overlay-show" style="transition: opacity 0.2s; pointer-events: none;">
-                            <span class="text-white fw-medium small"><i class="bi bi-zoom-in me-1"></i> Papar Media</span>
+                        <div class="position-absolute top-0 start-0 w-100 h-100 bg-black bg-opacity-40 d-flex align-items-center justify-content-center opacity-0 hover-overlay-show" style="transition: opacity 0.2s;">
+                            <span class="text-white fw-medium small bg-dark bg-opacity-75 px-3 py-1 rounded-pill"><i class="bi bi-zoom-in me-1"></i> Papar Media</span>
                         </div>
                     </div>
                 </div>
             <?php endwhile; ?>
         <?php else: ?>
             <div class="col-12 text-center text-muted py-5">
-                <i class="bi bi-images fs-1 d-block mb-2"></i>
+                <i class="bi bi-images fs-1 d-block mb-2 text-navy"></i>
                 Tiada fail media ditemui bagi kategori album yang dipilih.
             </div>
         <?php endif; ?>
@@ -115,12 +128,69 @@ $album_res = $conn->query("SELECT DISTINCT album FROM tbl_galeri WHERE album IS 
 
 </div>
 
-<!-- CSS Tambahan Khusus untuk Hover Overlay Galeri -->
+<!-- Modal Lightbox Galeri -->
+<div class="modal fade" id="galleryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-dark text-white border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header border-0 pb-0">
+                <div>
+                    <h5 class="modal-title fw-bold id-modal-title" id="galleryModalTitle">Papar Media</h5>
+                    <span class="badge bg-gold text-dark small mt-1" id="galleryModalAlbum">Album</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-3">
+                <div id="galleryModalMediaContainer" class="d-flex align-items-center justify-content-center" style="min-height: 350px; max-height: 70vh;">
+                    <!-- Content injected via JS -->
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0 d-flex justify-content-between">
+                <a id="galleryModalDriveBtn" href="#" target="_blank" class="btn btn-sm btn-outline-light d-none">
+                    <i class="bi bi-google me-1"></i> Buka di Google Drive
+                </a>
+                <button type="button" class="btn btn-sm btn-secondary px-4 ms-auto" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     .gallery-grid-item:hover .hover-overlay-show {
         opacity: 1 !important;
     }
+    .style-card-hover {
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .style-card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+    }
 </style>
+
+<script>
+function openGalleryModal(type, url, title, album, gdriveLink) {
+    document.getElementById('galleryModalTitle').innerText = title || 'Media LASSCAR 2026';
+    document.getElementById('galleryModalAlbum').innerText = album || 'Umum';
+    
+    const container = document.getElementById('galleryModalMediaContainer');
+    if (type === 'imej') {
+        container.innerHTML = `<img src="${url}" class="img-fluid rounded-3" style="max-height: 65vh; object-fit: contain;" alt="${title}">`;
+    } else {
+        container.innerHTML = `<video controls autoplay class="w-100 rounded-3" style="max-height: 65vh;"><source src="${url}" type="video/mp4"></video>`;
+    }
+    
+    const driveBtn = document.getElementById('galleryModalDriveBtn');
+    if (gdriveLink && gdriveLink.length > 5) {
+        driveBtn.href = gdriveLink;
+        driveBtn.classList.remove('d-none');
+    } else {
+        driveBtn.classList.add('d-none');
+    }
+    
+    const modal = new bootstrap.Modal(document.getElementById('galleryModal'));
+    modal.show();
+}
+</script>
 
 <?php 
 if ($stmt) $stmt->close();
