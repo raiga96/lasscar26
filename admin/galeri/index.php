@@ -58,7 +58,7 @@ unset($_SESSION['success_msg'], $_SESSION['error_msg']);
         if ($result && $result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
                 if (!empty($row['is_gdrive'])) {
-                    $file_url = BASE_URL . 'public/gdrive-image.php?id=' . $row['gdrive_file_id'];
+                    $file_url = "https://lh3.googleusercontent.com/d/" . $row['gdrive_file_id'] . "=w800";
                 } else {
                     $file_url = BASE_URL . 'assets/uploads/galeri/' . $row['url_fail'];
                 }

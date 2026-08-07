@@ -128,8 +128,8 @@ if ($s_res) {
             <?php while ($row = $result->fetch_assoc()): ?>
                 <?php 
                 if (!empty($row['is_gdrive'])) {
-                    $thumb_url = !empty($row['gdrive_thumbnail_url']) ? $row['gdrive_thumbnail_url'] : BASE_URL . 'public/gdrive-image.php?id=' . $row['gdrive_file_id'];
-                    $full_url  = BASE_URL . 'public/gdrive-image.php?id=' . $row['gdrive_file_id'];
+                    $thumb_url = "https://lh3.googleusercontent.com/d/" . $row['gdrive_file_id'] . "=w800";
+                    $full_url  = "https://lh3.googleusercontent.com/d/" . $row['gdrive_file_id'] . "=w1600";
                     $gdrive_link = $row['gdrive_view_url'] ?: "https://drive.google.com/file/d/" . $row['gdrive_file_id'] . "/view";
                 } else {
                     $thumb_url = BASE_URL . 'assets/uploads/galeri/' . $row['url_fail'];
@@ -147,7 +147,7 @@ if ($s_res) {
                          
                         <?php if ($row['jenis_fail'] === 'imej'): ?>
                             <img src="<?php echo sanitize($thumb_url); ?>" loading="lazy" class="w-100 h-100" style="object-fit: cover;" alt="<?php echo sanitize($row['tajuk']); ?>"
-                                 onerror="this.src='<?php echo BASE_URL . 'public/gdrive-image.php?id=' . ($row['gdrive_file_id'] ?? ''); ?>'">
+                                 onerror="this.onerror=null; this.src='<?php echo BASE_URL . 'public/gdrive-image.php?id=' . ($row['gdrive_file_id'] ?? ''); ?>'">
                         <?php else: ?>
                             <video class="w-100 h-100" style="object-fit: cover;" preload="metadata">
                                 <source src="<?php echo sanitize($thumb_url); ?>" type="video/mp4">
