@@ -1,7 +1,7 @@
 <?php
 /**
  * Enjin Penyegerakan Automatik Google Drive (Claude Specialist - Backend)
- * Mengesan imej baru, dikemaskini, dan dipadam dari Google Drive & menyegerak ke database (tbl_galeri).
+ * Mengesan imej baru, dikemaskini, dan dipadam dari Google Drive (termasuk 10 Sukan & Subfolder).
  */
 
 if (!defined('GDRIVE_SERVICE_ACCOUNT_FILE')) {
@@ -39,7 +39,7 @@ function sync_gdrive_gallery($conn, $folder_id = null, $force = false) {
         }
     }
 
-    // Ambil senarai fail dari Google Drive API v3
+    // Ambil senarai fail dari Google Drive API v3 (Imbasan Rekursif Subfolder & Sukan)
     $drive_files = fetch_gdrive_folder_files($folder_id);
     if ($drive_files === false) {
         return [
@@ -52,6 +52,15 @@ function sync_gdrive_gallery($conn, $folder_id = null, $force = false) {
 
     // Kemaskini penanda masa penyegerakan
     @file_put_contents($lock_file, (string)$now);
+
+    // Ambil senarai sukan aktif untuk pemadanan sukan_id automatik
+    $sukan_list = [];
+    $sukan_res = $conn->query("SELECT id, nama_sukan FROM tbl_sukan WHERE status = 'aktif'");
+    if ($sukan_res) {
+        while ($s_row = $sukan_res->fetch_assoc()) {
+            $sukan_list[$s_row['id']] = mb_strtolower(trim($s_row['nama_sukan']));
+        }
+    }
 
     // 1. Ambil semua rekod GDrive sedia ada dalam database
     $existing_records = [];
@@ -69,40 +78,55 @@ function sync_gdrive_gallery($conn, $folder_id = null, $force = false) {
     // Prepared statements untuk INSERT & UPDATE
     $stmt_insert = $conn->prepare("
         INSERT INTO tbl_galeri 
-        (tajuk, jenis_fail, url_fail, gdrive_file_id, gdrive_folder_id, gdrive_thumbnail_url, gdrive_view_url, gdrive_modified_time, is_gdrive, album, dicipta_pada) 
-        VALUES (?, 'imej', '', ?, ?, ?, ?, ?, 1, ?, ?)
+        (tajuk, jenis_fail, url_fail, gdrive_file_id, gdrive_folder_id, gdrive_thumbnail_url, gdrive_view_url, gdrive_modified_time, is_gdrive, album, sukan_id, dicipta_pada) 
+        VALUES (?, 'imej', '', ?, ?, ?, ?, ?, 1, ?, ?, ?)
     ");
 
     $stmt_update = $conn->prepare("
         UPDATE tbl_galeri 
-        SET tajuk = ?, gdrive_thumbnail_url = ?, gdrive_view_url = ?, gdrive_modified_time = ? 
+        SET tajuk = ?, gdrive_thumbnail_url = ?, gdrive_view_url = ?, gdrive_modified_time = ?, album = ?, sukan_id = ? 
         WHERE gdrive_file_id = ?
     ");
 
     foreach ($drive_files as $file) {
         $file_id       = $file['id'];
-        $file_name     = pathinfo($file['name'], PATHINFO_FILENAME);
+        $raw_name      = pathinfo($file['name'], PATHINFO_FILENAME);
+        $sub_detail    = !empty($file['subfolder_detail']) ? " ({$file['subfolder_detail']})" : "";
+        $file_name     = $raw_name . $sub_detail;
+        
         $thumb_url     = isset($file['thumbnailLink']) ? str_replace('=s220', '=w1000-h800', $file['thumbnailLink']) : '';
         $view_url      = $file['webViewLink'] ?? "https://drive.google.com/file/d/{$file_id}/view";
         $modified_time = isset($file['modifiedTime']) ? date('Y-m-d H:i:s', strtotime($file['modifiedTime'])) : date('Y-m-d H:i:s');
         $created_time  = isset($file['createdTime'])  ? date('Y-m-d H:i:s', strtotime($file['createdTime']))  : date('Y-m-d H:i:s');
-        $album_name    = 'Google Drive';
+        
+        $album_name    = !empty($file['album_name']) ? $file['album_name'] : 'Google Drive';
+        $item_folder_id= $file['folder_id'] ?? $folder_id;
+
+        // Pemadanan automatik sukan_id berdasarkan nama folder / album
+        $matched_sukan_id = null;
+        $search_term = mb_strtolower($album_name . ' ' . ($file['folder_name'] ?? ''));
+        foreach ($sukan_list as $s_id => $s_name) {
+            if (strpos($search_term, $s_name) !== false || strpos($s_name, $search_term) !== false) {
+                $matched_sukan_id = $s_id;
+                break;
+            }
+        }
 
         $seen_gdrive_ids[] = $file_id;
 
         if (!isset($existing_records[$file_id])) {
             // REKOD BARU -> INSERT
             if ($stmt_insert) {
-                $stmt_insert->bind_param("ssssssss", $file_name, $file_id, $folder_id, $thumb_url, $view_url, $modified_time, $album_name, $created_time);
+                $stmt_insert->bind_param("ssssssssis", $file_name, $file_id, $item_folder_id, $thumb_url, $view_url, $modified_time, $album_name, $matched_sukan_id, $created_time);
                 $stmt_insert->execute();
                 $added_count++;
             }
         } else {
-            // REKOD SEDIA ADA -> SEMAK JIKA WAKTU KEMASKINI BERBEZA
+            // REKOD SEDIA ADA -> UPDATE
             $db_rec = $existing_records[$file_id];
             if ($db_rec['gdrive_modified_time'] !== $modified_time) {
                 if ($stmt_update) {
-                    $stmt_update->bind_param("sssss", $file_name, $thumb_url, $view_url, $modified_time, $file_id);
+                    $stmt_update->bind_param("sssssis", $file_name, $thumb_url, $view_url, $modified_time, $album_name, $matched_sukan_id, $file_id);
                     $stmt_update->execute();
                     $updated_count++;
                 }
@@ -134,6 +158,6 @@ function sync_gdrive_gallery($conn, $folder_id = null, $force = false) {
         'updated' => $updated_count,
         'deleted' => $deleted_count,
         'total'   => count($drive_files),
-        'message' => "Penyegerakan berjaya! ({$added_count} baru, {$updated_count} dikemaskini, {$deleted_count} dipadam)."
+        'message' => "Penyegerakan automatik rekursif berjaya! ({$added_count} baru, {$updated_count} dikemaskini, {$deleted_count} dipadam)."
     ];
 }
