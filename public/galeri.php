@@ -128,7 +128,7 @@ if ($s_res) {
             <?php while ($row = $result->fetch_assoc()): ?>
                 <?php 
                 if (!empty($row['is_gdrive'])) {
-                    $thumb_url = BASE_URL . 'public/gdrive-image.php?id=' . $row['gdrive_file_id'];
+                    $thumb_url = !empty($row['gdrive_thumbnail_url']) ? $row['gdrive_thumbnail_url'] : BASE_URL . 'public/gdrive-image.php?id=' . $row['gdrive_file_id'];
                     $full_url  = BASE_URL . 'public/gdrive-image.php?id=' . $row['gdrive_file_id'];
                     $gdrive_link = $row['gdrive_view_url'] ?: "https://drive.google.com/file/d/" . $row['gdrive_file_id'] . "/view";
                 } else {
@@ -136,12 +136,14 @@ if ($s_res) {
                     $full_url  = $thumb_url;
                     $gdrive_link = '';
                 }
+                $js_tajuk = htmlspecialchars(addslashes($row['tajuk'] ?? ''), ENT_QUOTES, 'UTF-8');
+                $js_album = htmlspecialchars(addslashes($row['album'] ?? ''), ENT_QUOTES, 'UTF-8');
                 ?>
                 <div class="col-6 col-sm-6 col-md-4 col-lg-3">
                     <!-- Grid Item (Clickable for Lightbox) -->
                     <div class="gallery-grid-item position-relative bg-dark shadow-sm rounded-4 overflow-hidden style-card-hover" 
                          style="height: 220px; cursor: pointer;"
-                         onclick="openGalleryModal('<?php echo $row['jenis_fail']; ?>', '<?php echo sanitize($full_url); ?>', '<?php echo sanitize($row['tajuk']); ?>', '<?php echo sanitize($row['album']); ?>', '<?php echo sanitize($gdrive_link); ?>')">
+                         onclick="openGalleryModal('<?php echo $row['jenis_fail']; ?>', '<?php echo sanitize($full_url); ?>', '<?php echo $js_tajuk; ?>', '<?php echo $js_album; ?>', '<?php echo sanitize($gdrive_link); ?>')">
                          
                         <?php if ($row['jenis_fail'] === 'imej'): ?>
                             <img src="<?php echo sanitize($thumb_url); ?>" loading="lazy" class="w-100 h-100" style="object-fit: cover;" alt="<?php echo sanitize($row['tajuk']); ?>"
