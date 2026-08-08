@@ -90,40 +90,59 @@ if ($result && $result->num_rows > 0) {
                         $display_b = $row['nama_b'] ?: ($row['bhg_b'] ?? 'TBD');
                         $logo_a = BASE_URL . 'assets/uploads/logo-bahagian/' . (!empty($row['logo_a']) ? $row['logo_a'] : 'default_logo.png');
                         $logo_b = BASE_URL . 'assets/uploads/logo-bahagian/' . (!empty($row['logo_b']) ? $row['logo_b'] : 'default_logo.png');
+                        
+                        $skor_a_val = ($row['skor_a'] !== null) ? (int)$row['skor_a'] : 0;
+                        $skor_b_val = ($row['skor_b'] !== null) ? (int)$row['skor_b'] : 0;
                         ?>
-                        <div class="col-md-8 col-lg-6">
-                            <div class="card border-0 shadow rounded-3 p-4 bg-white text-center border-top border-danger border-4">
-                                <span class="badge badge-live-blink mb-3 mx-auto px-3 py-2 fs-6">🔴 SEDANG BERLANGSUNG</span>
-                                <div class="small text-muted mb-2"><?php echo sanitize($row['nama_sukan']); ?> (<?php echo sanitize(ucfirst($row['kategori'])); ?>) | <?php echo sanitize($row['pusingan'] ?: 'Peringkat Kumpulan'); ?></div>
-                                
-                                <div class="d-flex align-items-center justify-content-center gap-4 my-3">
+                        <div class="col-md-6 col-lg-5">
+                            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 text-center position-relative style-live-card">
+                                <!-- Header Card -->
+                                <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                                    <span class="badge bg-light text-dark border small fw-semibold px-3 py-1.5"><?php echo sanitize($row['nama_sukan']); ?></span>
+                                    <span class="badge bg-danger text-white rounded-pill px-3 py-1.5 fw-bold shadow-sm animate-pulse">
+                                        <i class="bi bi-record-fill me-1"></i> LIVE
+                                    </span>
+                                </div>
+
+                                <!-- Pusingan -->
+                                <div class="small text-muted mb-3 fw-semibold"><?php echo sanitize($row['pusingan'] ?: 'Peringkat Kumpulan'); ?></div>
+
+                                <!-- Pasukan & Skor -->
+                                <div class="d-flex align-items-center justify-content-between my-3 px-1 gap-2">
                                     <!-- Pasukan A -->
-                                    <div class="text-center" style="width: 120px;">
-                                        <img src="<?php echo $logo_a; ?>" alt="" class="img-fluid rounded border p-1 bg-white mb-2" style="width: 60px; height: 60px; object-fit: cover;">
-                                        <span class="d-block fw-bold text-dark"><?php echo sanitize($display_a); ?></span>
-                                    </div>
-                                    
-                                    <!-- Skor Tengah -->
-                                    <div>
-                                        <span class="display-5 fw-bold text-navy px-3 py-1 bg-light rounded border">
-                                            <?php echo ($row['skor_a'] !== null) ? $row['skor_a'] : '0'; ?>
-                                            <?php if ($row['pasukan_b_id'] !== null): ?>
-                                                -
-                                                <?php echo ($row['skor_b'] !== null) ? $row['skor_b'] : '0'; ?>
-                                            <?php endif; ?>
+                                    <div class="text-center flex-fill" style="flex: 1; min-width: 0;">
+                                        <div class="d-flex align-items-center justify-content-center mx-auto mb-2" style="height: 60px;">
+                                            <img src="<?php echo $logo_a; ?>" alt="" class="img-fluid" style="max-width: 55px; max-height: 55px; object-fit: contain;">
+                                        </div>
+                                        <span class="d-block fw-bold text-dark fs-6 lh-sm" title="<?php echo sanitize($display_a); ?>">
+                                            <?php echo sanitize($display_a); ?>
                                         </span>
                                     </div>
 
+                                    <!-- Skor Tengah (0 - 0) -->
+                                    <div class="px-2 text-center flex-shrink-0">
+                                        <div class="fs-2 fw-bold text-navy px-3 py-1 bg-light rounded-3 border shadow-sm d-inline-block" style="letter-spacing: 0.05em;">
+                                            <span class="text-navy"><?php echo $skor_a_val; ?></span>
+                                            <span class="text-muted opacity-50 mx-1.5">-</span>
+                                            <span class="text-navy"><?php echo $skor_b_val; ?></span>
+                                        </div>
+                                    </div>
+
                                     <!-- Pasukan B -->
-                                    <div class="text-center" style="width: 120px;">
-                                        <img src="<?php echo $logo_b; ?>" alt="" class="img-fluid rounded border p-1 bg-white mb-2" style="width: 60px; height: 60px; object-fit: cover;">
-                                        <span class="d-block fw-bold text-dark"><?php echo sanitize($display_b); ?></span>
+                                    <div class="text-center flex-fill" style="flex: 1; min-width: 0;">
+                                        <div class="d-flex align-items-center justify-content-center mx-auto mb-2" style="height: 60px;">
+                                            <img src="<?php echo $logo_b; ?>" alt="" class="img-fluid" style="max-width: 55px; max-height: 55px; object-fit: contain;">
+                                        </div>
+                                        <span class="d-block fw-bold text-dark fs-6 lh-sm" title="<?php echo sanitize($display_b); ?>">
+                                            <?php echo sanitize($display_b); ?>
+                                        </span>
                                     </div>
                                 </div>
 
-                                <div class="text-muted small pt-3 border-top mt-3">
-                                    <i class="bi bi-geo-alt-fill text-danger me-1"></i> <?php echo sanitize($row['nama_tempat']); ?><br>
-                                    <i class="bi bi-clock me-1"></i> Mula pada <?php echo format_time($row['masa']); ?>
+                                <!-- Venue & Tarikh -->
+                                <div class="text-muted small pt-3 border-top mt-3 d-flex align-items-center justify-content-center gap-3">
+                                    <span><i class="bi bi-geo-alt-fill text-danger me-1"></i> <?php echo sanitize($row['nama_tempat'] ?: 'Stadium Perpaduan'); ?></span>
+                                    <span><i class="bi bi-calendar-event me-1"></i> <?php echo format_date($row['tarikh']); ?></span>
                                 </div>
                             </div>
                         </div>

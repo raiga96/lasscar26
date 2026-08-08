@@ -228,37 +228,43 @@ if ($res_banners && $res_banners->num_rows > 0) {
 
                             <div class="small text-muted mb-2 fw-semibold"><?php echo sanitize($row['pusingan'] ?: 'Peringkat Kumpulan'); ?></div>
                             
-                            <div class="d-flex align-items-center justify-content-between my-3 px-2">
+                            <div class="d-flex align-items-center justify-content-between my-3 px-1 gap-2">
                                 <!-- Pasukan A -->
-                                <div class="text-center flex-fill" style="max-width: 100px;">
+                                <div class="text-center flex-fill" style="flex: 1; min-width: 0;">
                                     <div class="d-flex align-items-center justify-content-center mx-auto mb-2" style="height: 60px;">
                                         <img src="<?php echo $logo_a; ?>" alt="" class="img-fluid" style="max-width: 55px; max-height: 55px; object-fit: contain;">
                                     </div>
-                                    <span class="d-block small fw-bold text-dark text-truncate" title="<?php echo sanitize($display_a); ?>"><?php echo sanitize($display_a); ?></span>
+                                    <span class="d-block fw-bold text-dark fs-6 lh-sm" title="<?php echo sanitize($display_a); ?>">
+                                        <?php echo sanitize($display_a); ?>
+                                    </span>
                                 </div>
                                 
                                 <!-- Skor / VS -->
-                                <div class="px-2 flex-fill">
+                                <div class="px-2 text-center flex-shrink-0">
                                     <?php if ($row['status'] === 'akan_datang'): ?>
                                         <span class="fs-6 fw-bold text-muted d-block"><?php echo format_time($row['masa']); ?></span>
                                         <span class="badge bg-light text-secondary border extra-small mt-1">VS</span>
                                     <?php else: ?>
-                                        <span class="fs-2 fw-bold text-navy">
-                                            <?php echo ($row['skor_a'] !== null) ? $row['skor_a'] : '0'; ?>
-                                            <?php if ($row['pasukan_b_id'] !== null): ?>
-                                                <span class="text-muted fs-4 ms-1 me-1">-</span>
-                                                <?php echo ($row['skor_b'] !== null) ? $row['skor_b'] : '0'; ?>
-                                            <?php endif; ?>
-                                        </span>
+                                        <?php 
+                                        $skor_a_val = ($row['skor_a'] !== null) ? (int)$row['skor_a'] : 0;
+                                        $skor_b_val = ($row['skor_b'] !== null) ? (int)$row['skor_b'] : 0;
+                                        ?>
+                                        <div class="fs-2 fw-bold text-navy px-3 py-1 bg-light rounded-3 border shadow-sm d-inline-block" style="letter-spacing: 0.05em;">
+                                            <span class="text-navy"><?php echo $skor_a_val; ?></span>
+                                            <span class="text-muted opacity-50 mx-1.5">-</span>
+                                            <span class="text-navy"><?php echo $skor_b_val; ?></span>
+                                        </div>
                                     <?php endif; ?>
                                 </div>
 
                                 <!-- Pasukan B -->
-                                <div class="text-center flex-fill" style="max-width: 100px;">
+                                <div class="text-center flex-fill" style="flex: 1; min-width: 0;">
                                     <div class="d-flex align-items-center justify-content-center mx-auto mb-2" style="height: 60px;">
                                         <img src="<?php echo $logo_b; ?>" alt="" class="img-fluid" style="max-width: 55px; max-height: 55px; object-fit: contain;">
                                     </div>
-                                    <span class="d-block small fw-bold text-dark text-truncate" title="<?php echo sanitize($display_b); ?>"><?php echo sanitize($display_b); ?></span>
+                                    <span class="d-block fw-bold text-dark fs-6 lh-sm" title="<?php echo sanitize($display_b); ?>">
+                                        <?php echo sanitize($display_b); ?>
+                                    </span>
                                 </div>
                             </div>
                             
