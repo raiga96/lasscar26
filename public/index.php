@@ -186,7 +186,9 @@ if ($res_banners && $res_banners->num_rows > 0) {
         <div class="row g-4">
             <?php
             // Kemaskini status perlawanan ke 'live' secara automatik apabila masa sudah masuk
-            auto_update_match_statuses($conn);
+            if (function_exists('auto_update_match_statuses')) {
+                auto_update_match_statuses($conn);
+            }
 
             $query_matches = "
                 SELECT j.id, j.status, j.tarikh, j.masa, j.pusingan,
