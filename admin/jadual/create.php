@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $masa         = $_POST['masa'] ?? '';
     $pusingan     = trim($_POST['pusingan'] ?? '');
     $status       = $_POST['status'] ?? 'akan_datang';
+    $youtube_url  = trim($_POST['youtube_url'] ?? '');
     $csrf_token   = $_POST['csrf_token'] ?? '';
 
     // Validate CSRF
@@ -35,9 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error_msg = "Pasukan A dan Pasukan B tidak boleh kontinjen yang sama.";
     } else {
         // Prepared statement insert
-        $stmt = $conn->prepare("INSERT INTO tbl_jadual_perlawanan (sukan_id, pasukan_a_id, pasukan_b_id, venue_id, tarikh, masa, pusingan, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO tbl_jadual_perlawanan (sukan_id, pasukan_a_id, pasukan_b_id, venue_id, tarikh, masa, pusingan, status, youtube_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         if ($stmt) {
-            $stmt->bind_param("iiiissss", $sukan_id, $pasukan_a_id, $pasukan_b_id, $venue_id, $tarikh, $masa, $pusingan, $status);
+            $stmt->bind_param("iiiisssss", $sukan_id, $pasukan_a_id, $pasukan_b_id, $venue_id, $tarikh, $masa, $pusingan, $status, $youtube_url);
             
             if ($stmt->execute()) {
                 $new_id = $conn->insert_id;
@@ -197,6 +198,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <option value="selesai">Selesai</option>
                         <option value="ditangguh">Ditangguh / Batal</option>
                     </select>
+                </div>
+
+                <!-- YouTube Live URL -->
+                <div class="mb-4">
+                    <label for="youtube_url" class="form-label fw-semibold">Pautan Siaran Langsung YouTube Live (Opsional)</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light text-danger"><i class="bi bi-youtube"></i></span>
+                        <input type="url" class="form-control" id="youtube_url" name="youtube_url" placeholder="Contoh: https://www.youtube.com/watch?v=XXXX atau ID 11 aksara">
+                    </div>
+                    <div class="form-text">Masukkan pautan atau ID video YouTube Live untuk dipaparkan pada kad perlawanan LIVE.</div>
                 </div>
 
                 <div class="pt-2 d-flex gap-2">

@@ -149,6 +149,18 @@ if ($result && $result->num_rows > 0) {
                                     <span><i class="bi bi-geo-alt-fill text-danger me-1"></i> <?php echo sanitize($row['nama_tempat'] ?: 'Stadium Perpaduan'); ?></span>
                                     <span><i class="bi bi-calendar-event me-1"></i> <?php echo format_date($row['tarikh']); ?></span>
                                 </div>
+
+                                <?php 
+                                $yt_embed = !empty($row['youtube_url']) ? get_youtube_embed_url($row['youtube_url']) : null;
+                                if ($yt_embed): 
+                                ?>
+                                    <div class="mt-3 pt-2">
+                                        <button type="button" class="btn btn-danger btn-sm w-100 fw-bold rounded-pill shadow-sm animate-pulse"
+                                                onclick="openYoutubeModal('<?php echo $yt_embed; ?>', '<?php echo sanitize(addslashes($display_a . ' vs ' . $display_b)); ?>')">
+                                            <i class="bi bi-youtube me-1"></i> 📺 Tonton Siaran Langsung (YouTube Live)
+                                        </button>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -300,5 +312,42 @@ if ($result && $result->num_rows > 0) {
     </div>
 
 </div>
+
+<!-- Modal YouTube Live Player -->
+<div class="modal fade" id="youtubeLiveModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-dark text-white border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold text-white fs-6" id="youtubeModalTitle"><i class="bi bi-youtube text-danger me-2"></i> Siaran Langsung</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" onclick="closeYoutubeModal()"></button>
+            </div>
+            <div class="modal-body p-2">
+                <div class="ratio ratio-16x9 rounded-3 overflow-hidden">
+                    <iframe id="youtubeIframe" src="" title="YouTube Live Stream" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-sm btn-outline-light px-4 ms-auto" data-bs-dismiss="modal" onclick="closeYoutubeModal()">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openYoutubeModal(embedUrl, title) {
+    document.getElementById('youtubeModalTitle').innerHTML = '<i class="bi bi-youtube text-danger me-2"></i> ' + title;
+    document.getElementById('youtubeIframe').src = embedUrl;
+    const modal = new bootstrap.Modal(document.getElementById('youtubeLiveModal'));
+    modal.show();
+}
+
+function closeYoutubeModal() {
+    document.getElementById('youtubeIframe').src = '';
+}
+
+document.getElementById('youtubeLiveModal')?.addEventListener('hidden.bs.modal', function () {
+    closeYoutubeModal();
+});
+</script>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>

@@ -305,3 +305,26 @@ function auto_update_match_statuses(mysqli $conn): int {
     }
     return 0;
 }
+
+/**
+ * Tukar pautan YouTube kepada pautan Embed / ID Video YouTube yang sah.
+ * 
+ * @param string|null $url Pautan YouTube (watch?v=..., youtu.be/..., embed/...)
+ * @return string|null Embed URL atau null jika tidak sah
+ */
+function get_youtube_embed_url(?string $url): ?string {
+    if (empty($url)) return null;
+    $url = trim($url);
+    
+    // Format 1: https://www.youtube.com/watch?v=XXXX atau https://youtu.be/XXXX
+    if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $url, $matches)) {
+        return 'https://www.youtube.com/embed/' . $matches[1] . '?autoplay=1&rel=0';
+    }
+    
+    // Format 2: ID sahaja (11 aksara)
+    if (preg_match('/^[a-zA-Z0-9_-]{11}$/', $url)) {
+        return 'https://www.youtube.com/embed/' . $url . '?autoplay=1&rel=0';
+    }
+    
+    return null;
+}
