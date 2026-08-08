@@ -12,7 +12,13 @@ require_once __DIR__ . '/../../includes/db.php';
 // Pastikan super_admin atau editor sahaja boleh mengakses modul ini
 confirm_access(['super_admin', 'editor']);
 
+// Semak dan kemaskini status perlawanan ke 'live' secara automatik apabila masa sudah masuk
+$auto_live_count = auto_update_match_statuses($conn);
+
 $success_msg = $_SESSION['success_msg'] ?? '';
+if ($auto_live_count > 0 && empty($success_msg)) {
+    $success_msg = "Sebanyak $auto_live_count perlawanan telah bertukar status ke SEDANG BERLANGSUNG (LIVE) secara automatik.";
+}
 $error_msg = $_SESSION['error_msg'] ?? '';
 unset($_SESSION['success_msg'], $_SESSION['error_msg']);
 ?>

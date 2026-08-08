@@ -5,8 +5,10 @@
  */
 
 $page_title = "Pusat Perlawanan (Match Center)";
-require_once __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../includes/db.php';
+
+// Kemaskini status perlawanan ke 'live' secara automatik apabila masa sudah masuk
+auto_update_match_statuses($conn);
 
 // Ambil semua perlawanan dan asingkan mengikut status di server untuk kelajuan optimum
 $query = "SELECT j.*, s.nama_sukan, s.kategori, s.jenis_perlawanan, 

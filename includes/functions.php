@@ -282,3 +282,26 @@ function upload_file(array $file, string $target_dir, array $allowed_mimes, int 
         return ['success' => false, 'error' => "Gagal memindahkan fail temp ke destinasi akhir pelayan."];
     }
 }
+
+/**
+ * Tukar status perlawanan daripada 'akan_datang' kepada 'live' secara automatik apabila tarikh & masa perlawanan sudah masuk.
+ * 
+ * @param mysqli $conn Objek sambungan MySQLi
+ * @return int Bilangan perlawanan yang dikemaskini ke 'live'
+ */
+function auto_update_match_statuses(mysqli $conn): int {
+    $now = date('Y-m-d H:i:s');
+    $sql = "UPDATE tbl_jadual_perlawanan 
+            SET status = 'live' 
+            WHERE status = 'akan_datang' 
+              AND CONCAT(tarikh, ' ', masa) <= ?";
+    $stmt = $conn->prepare($sql);
+    if ($stmt) {
+        $stmt->bind_param("s", $now);
+        $stmt->execute();
+        $affected = $stmt->affected_rows;
+        $stmt->close();
+        return $affected;
+    }
+    return 0;
+}
