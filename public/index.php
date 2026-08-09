@@ -109,10 +109,20 @@ if ($res_banners && $res_banners->num_rows > 0) {
 <?php else: ?>
     <!-- MOD SLIDER BANNER / HERO HEBAT -->
     <?php if (count($banners) > 0): ?>
-        <div id="heroCarousel" class="carousel slide hero-carousel shadow" data-bs-ride="carousel">
+        <div id="heroCarousel" class="carousel slide hero-carousel shadow" data-bs-ride="carousel" data-bs-interval="4000">
+            <?php if (count($banners) > 1): ?>
+                <div class="carousel-indicators mb-3">
+                    <?php foreach ($banners as $index => $banner): ?>
+                        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="<?php echo $index; ?>" 
+                                class="<?php echo $index === 0 ? 'active' : ''; ?>" 
+                                aria-current="<?php echo $index === 0 ? 'true' : 'false'; ?>" 
+                                aria-label="Slaid <?php echo $index + 1; ?>"></button>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
             <div class="carousel-inner">
                 <?php foreach ($banners as $index => $banner): ?>
-                    <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                    <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>" data-bs-interval="4000">
                         <img src="<?php echo BASE_URL; ?>assets/uploads/hero/<?php echo $banner['url_imej']; ?>" class="d-block w-100" alt="<?php echo sanitize($banner['tajuk']); ?>">
                     </div>
                 <?php endforeach; ?>
@@ -476,6 +486,19 @@ function closeYoutubeModal() {
 
 document.getElementById('youtubeLiveModal')?.addEventListener('hidden.bs.modal', function () {
     closeYoutubeModal();
+});
+
+// Inisialisasi Auto-cycle Hero Banner Carousel
+document.addEventListener("DOMContentLoaded", function() {
+    const heroCarousel = document.getElementById('heroCarousel');
+    if (heroCarousel && typeof bootstrap !== 'undefined') {
+        new bootstrap.Carousel(heroCarousel, {
+            interval: 4000,
+            ride: 'carousel',
+            wrap: true,
+            touch: true
+        });
+    }
 });
 </script>
 

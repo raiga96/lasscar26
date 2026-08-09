@@ -18,7 +18,7 @@ $success_msg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tajuk             = trim($_POST['tajuk'] ?? '');
     $bahagian_juara_id = isset($_POST['bahagian_juara_id']) && $_POST['bahagian_juara_id'] !== '' ? (int)$_POST['bahagian_juara_id'] : null;
-    $status_aktif      = $_POST['status_aktif'] ?? 'tidak_aktif';
+    $status_aktif      = $_POST['status_aktif'] ?? 'aktif';
     $susunan           = (int)($_POST['susunan'] ?? 0);
     $submitted_csrf    = $_POST['csrf_token'] ?? '';
 
@@ -128,8 +128,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="col-6">
                         <label for="status_aktif" class="form-label fw-semibold">Status Paparan</label>
                         <select class="form-select" id="status_aktif" name="status_aktif">
+                            <option value="aktif" selected>Aktif (Paparkan di Slider)</option>
                             <option value="tidak_aktif">Tidak Aktif</option>
-                            <option value="aktif">Aktif (Paparkan di Slider)</option>
                         </select>
                     </div>
                     <div class="col-6">
