@@ -15,6 +15,18 @@ confirm_access(['super_admin', 'editor']);
 $success_msg = $_SESSION['success_msg'] ?? '';
 $error_msg = $_SESSION['error_msg'] ?? '';
 unset($_SESSION['success_msg'], $_SESSION['error_msg']);
+
+// Parameter Penapis Sukan
+$filter_sukan = isset($_GET['sukan_id']) && (int)$_GET['sukan_id'] > 0 ? (int)$_GET['sukan_id'] : null;
+
+// Ambil Senarai Sukan untuk Penapis Pills
+$sports_list = [];
+$res_sports = $conn->query("SELECT id, nama_sukan, ikon FROM tbl_sukan WHERE status = 'aktif' ORDER BY nama_sukan ASC");
+if ($res_sports) {
+    while ($sp = $res_sports->fetch_assoc()) {
+        $sports_list[] = $sp;
+    }
+}
 ?>
 
 <div class="row mb-3 align-items-center">
@@ -39,6 +51,22 @@ unset($_SESSION['success_msg'], $_SESSION['error_msg']);
 <?php endif; ?>
 
 <div class="card card-admin p-4">
+    <!-- Penapis Pills Sukan -->
+    <div class="mb-4 pb-3 border-bottom">
+        <label class="form-label small text-muted fw-bold mb-2"><i class="bi bi-funnel-fill me-1"></i> Tapis Mengikut Sukan:</label>
+        <div class="d-flex flex-wrap gap-1">
+            <a href="index.php" class="btn btn-sm <?php echo ($filter_sukan === null) ? 'btn-navy fw-bold' : 'btn-outline-secondary'; ?> rounded-pill px-3">
+                Semua Sukan
+            </a>
+            <?php foreach ($sports_list as $sp): ?>
+                <a href="index.php?sukan_id=<?php echo $sp['id']; ?>" 
+                   class="btn btn-sm <?php echo ($filter_sukan === (int)$sp['id']) ? 'btn-navy fw-bold' : 'btn-outline-secondary'; ?> rounded-pill px-3">
+                    <i class="bi <?php echo sanitize($sp['ikon'] ?: 'bi-trophy-fill'); ?> me-1"></i> <?php echo sanitize($sp['nama_sukan']); ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
     <div class="table-responsive">
         <table class="table table-hover align-middle">
             <thead class="table-light">
@@ -54,6 +82,11 @@ unset($_SESSION['success_msg'], $_SESSION['error_msg']);
             </thead>
             <tbody>
                 <?php
+                $where_sql = "";
+                if ($filter_sukan !== null) {
+                    $where_sql = " WHERE j.sukan_id = ? ";
+                }
+
                 $query = "SELECT j.id AS jadual_id, j.status AS j_status, j.pusingan,
                                  s.nama_sukan, s.kategori, s.jenis_perlawanan,
                                  pa.nama_pasukan AS nama_a, ba.nama_bahagian AS bhg_a,
@@ -71,8 +104,17 @@ unset($_SESSION['success_msg'], $_SESSION['error_msg']);
                           LEFT JOIN tbl_pasukan pw ON k.pasukan_menang_id = pw.id
                           LEFT JOIN tbl_bahagian bw ON pw.bahagian_id = bw.id
                           LEFT JOIN tbl_pengguna u ON k.direkod_oleh = u.id
+                          $where_sql
                           ORDER BY j.status DESC, j.tarikh ASC, j.masa ASC";
-                $result = $conn->query($query);
+
+                if ($filter_sukan !== null) {
+                    $stmt = $conn->prepare($query);
+                    $stmt->bind_param("i", $filter_sukan);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                } else {
+                    $result = $conn->query($query);
+                }
 
                 if ($result && $result->num_rows > 0) {
                     while ($row = $result->fetch_assoc()) {

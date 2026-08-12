@@ -13,7 +13,20 @@ if (function_exists('auto_update_match_statuses')) {
     auto_update_match_statuses($conn);
 }
 
-// Ambil semua perlawanan dan asingkan mengikut status di server untuk kelajuan optimum
+// Ambil parameter filter sukan & tab jika ada
+$filter_sukan = isset($_GET['sukan_id']) && (int)$_GET['sukan_id'] > 0 ? (int)$_GET['sukan_id'] : null;
+$req_tab      = isset($_GET['tab']) ? trim($_GET['tab']) : '';
+
+// Dapatkan senarai sukan aktif untuk filter UI
+$sukan_list = [];
+$res_sukan = $conn->query("SELECT id, nama_sukan, ikon FROM tbl_sukan WHERE status = 'aktif' ORDER BY nama_sukan ASC");
+if ($res_sukan && $res_sukan->num_rows > 0) {
+    while ($s_row = $res_sukan->fetch_assoc()) {
+        $sukan_list[] = $s_row;
+    }
+}
+
+// Ambil semua perlawanan dan asingkan mengikut status di server
 $query = "SELECT j.*, s.nama_sukan, s.kategori, s.jenis_perlawanan, 
                  pa.nama_pasukan AS nama_a, ba.nama_bahagian AS bhg_a, ba.logo_url AS logo_a,
                  pb.nama_pasukan AS nama_b, bb.nama_bahagian AS bhg_b, bb.logo_url AS logo_b,
@@ -42,11 +55,39 @@ if ($result && $result->num_rows > 0) {
         if ($row['status'] === 'live') {
             $matches_live[] = $row;
         } elseif ($row['status'] === 'akan_datang' || $row['status'] === 'ditangguh') {
+            // Tapis mengikut sukan jika penapis diaktifkan
+            if ($filter_sukan !== null && (int)$row['sukan_id'] !== $filter_sukan) {
+                continue;
+            }
             $matches_next[] = $row;
         } elseif ($row['status'] === 'selesai') {
+            // Tapis mengikut sukan jika penapis diaktifkan
+            if ($filter_sukan !== null && (int)$row['sukan_id'] !== $filter_sukan) {
+                continue;
+            }
             $matches_past[] = $row;
         }
     }
+}
+
+// Susun perlawanan selesai: paling terkini (tarikh DESC, masa DESC) di paling atas
+usort($matches_past, function($a, $b) {
+    $time_a = strtotime($a['tarikh'] . ' ' . $a['masa']);
+    $time_b = strtotime($b['tarikh'] . ' ' . $b['masa']);
+    return $time_b - $time_a;
+});
+
+// Tentukan tab mana yang patut aktif mengikut konteks
+$active_tab = 'live';
+if ($req_tab === 'next') {
+    $active_tab = 'next';
+} elseif ($req_tab === 'past' || ($filter_sukan !== null && $req_tab === '')) {
+    $active_tab = ($req_tab === 'next') ? 'next' : ($filter_sukan !== null && $req_tab === 'next' ? 'next' : ($req_tab ? $req_tab : 'past'));
+}
+if ($filter_sukan !== null && !empty($req_tab)) {
+    $active_tab = $req_tab;
+} elseif ($filter_sukan !== null && empty($req_tab)) {
+    $active_tab = 'next'; // Default ke perlawanan seterusnya jika ditapis dari tab seterusnya
 }
 ?>
 
@@ -63,7 +104,7 @@ if ($result && $result->num_rows > 0) {
     <!-- Tab Navigation Bootstrap -->
     <ul class="nav nav-pills justify-content-center mb-4 gap-2" id="matchTab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link btn-outline-primary fw-semibold px-4 position-relative active" id="live-tab" data-bs-toggle="tab" data-bs-target="#live-content" type="button" role="tab" aria-controls="live-content" aria-selected="true">
+            <button class="nav-link btn-outline-primary fw-semibold px-4 position-relative <?php echo ($active_tab === 'live') ? 'active' : ''; ?>" id="live-tab" data-bs-toggle="tab" data-bs-target="#live-content" type="button" role="tab" aria-controls="live-content" aria-selected="<?php echo ($active_tab === 'live') ? 'true' : 'false'; ?>">
                 🔴 Sedang Berlangsung (LIVE)
                 <?php if (count($matches_live) > 0): ?>
                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -73,20 +114,23 @@ if ($result && $result->num_rows > 0) {
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link btn-outline-primary fw-semibold px-4" id="next-tab" data-bs-toggle="tab" data-bs-target="#next-content" type="button" role="tab" aria-controls="next-content" aria-selected="false">
+            <button class="nav-link btn-outline-primary fw-semibold px-4 <?php echo ($active_tab === 'next') ? 'active' : ''; ?>" id="next-tab" data-bs-toggle="tab" data-bs-target="#next-content" type="button" role="tab" aria-controls="next-content" aria-selected="false">
                 📅 Perlawanan Seterusnya
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link btn-outline-primary fw-semibold px-4" id="past-tab" data-bs-toggle="tab" data-bs-target="#past-content" type="button" role="tab" aria-controls="past-content" aria-selected="false">
+            <button class="nav-link btn-outline-primary fw-semibold px-4 <?php echo ($active_tab === 'past') ? 'active' : ''; ?>" id="past-tab" data-bs-toggle="tab" data-bs-target="#past-content" type="button" role="tab" aria-controls="past-content" aria-selected="<?php echo ($active_tab === 'past') ? 'true' : 'false'; ?>">
                 🏁 Perlawanan Selesai
+                <?php if ($filter_sukan !== null): ?>
+                    <span class="badge bg-warning text-dark ms-1">Telah Ditapis</span>
+                <?php endif; ?>
             </button>
         </li>
     </ul>
 
     <div class="tab-content" id="matchTabContent">
         <!-- ================= TAB 1: LIVE MATCHES ================= -->
-        <div class="tab-pane fade show active" id="live-content" role="tabpanel" aria-labelledby="live-tab">
+        <div class="tab-pane fade <?php echo ($active_tab === 'live') ? 'show active' : ''; ?>" id="live-content" role="tabpanel" aria-labelledby="live-tab">
             <div class="row g-4 justify-content-center">
                 <?php if (count($matches_live) > 0): ?>
                     <?php foreach ($matches_live as $row): ?>
@@ -174,7 +218,30 @@ if ($result && $result->num_rows > 0) {
         </div>
 
         <!-- ================= TAB 2: UPCOMING MATCHES ================= -->
-        <div class="tab-pane fade" id="next-content" role="tabpanel" aria-labelledby="next-tab">
+        <div class="tab-pane fade <?php echo ($active_tab === 'next') ? 'show active' : ''; ?>" id="next-content" role="tabpanel" aria-labelledby="next-tab">
+            <!-- Penapis Pills Sukan UI/UX -->
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white mb-4">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <label class="form-label small text-muted fw-bold mb-0"><i class="bi bi-funnel-fill text-primary me-1"></i> Tapis Mengikut Acara Sukan:</label>
+                    <?php if ($filter_sukan !== null): ?>
+                        <a href="keputusan.php?tab=next" class="btn btn-xs btn-sm btn-outline-secondary rounded-pill">
+                            <i class="bi bi-x-circle me-1"></i> Reset Penapis
+                        </a>
+                    <?php endif; ?>
+                </div>
+                <div class="d-flex flex-wrap gap-1.5 mt-2">
+                    <a href="keputusan.php?tab=next" class="btn btn-sm <?php echo ($filter_sukan === null) ? 'btn-navy fw-bold shadow-sm' : 'btn-outline-secondary'; ?> rounded-pill px-3">
+                        🏆 Semua Sukan
+                    </a>
+                    <?php foreach ($sukan_list as $sp): ?>
+                        <a href="keputusan.php?tab=next&sukan_id=<?php echo $sp['id']; ?>" 
+                           class="btn btn-sm <?php echo ($filter_sukan === (int)$sp['id']) ? 'btn-navy fw-bold shadow-sm' : 'btn-outline-secondary'; ?> rounded-pill px-3">
+                            <i class="bi <?php echo sanitize($sp['ikon'] ?: 'bi-trophy-fill'); ?> me-1"></i> <?php echo sanitize($sp['nama_sukan']); ?>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
             <div class="row g-4">
                 <?php if (count($matches_next) > 0): ?>
                     <?php foreach ($matches_next as $row): ?>
@@ -228,7 +295,30 @@ if ($result && $result->num_rows > 0) {
         </div>
 
         <!-- ================= TAB 3: PAST MATCHES ================= -->
-        <div class="tab-pane fade" id="past-content" role="tabpanel" aria-labelledby="past-tab">
+        <div class="tab-pane fade <?php echo ($active_tab === 'past') ? 'show active' : ''; ?>" id="past-content" role="tabpanel" aria-labelledby="past-tab">
+            <!-- Penapis Pills Sukan UI/UX -->
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white mb-4">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                    <label class="form-label small text-muted fw-bold mb-0"><i class="bi bi-funnel-fill text-primary me-1"></i> Tapis Mengikut Acara Sukan:</label>
+                    <?php if ($filter_sukan !== null): ?>
+                        <a href="keputusan.php?tab=past" class="btn btn-xs btn-sm btn-outline-secondary rounded-pill">
+                            <i class="bi bi-x-circle me-1"></i> Reset Penapis
+                        </a>
+                    <?php endif; ?>
+                </div>
+                <div class="d-flex flex-wrap gap-1.5 mt-2">
+                    <a href="keputusan.php?tab=past" class="btn btn-sm <?php echo ($filter_sukan === null) ? 'btn-navy fw-bold shadow-sm' : 'btn-outline-secondary'; ?> rounded-pill px-3">
+                        🏆 Semua Sukan
+                    </a>
+                    <?php foreach ($sukan_list as $sp): ?>
+                        <a href="keputusan.php?tab=past&sukan_id=<?php echo $sp['id']; ?>" 
+                           class="btn btn-sm <?php echo ($filter_sukan === (int)$sp['id']) ? 'btn-navy fw-bold shadow-sm' : 'btn-outline-secondary'; ?> rounded-pill px-3">
+                            <i class="bi <?php echo sanitize($sp['ikon'] ?: 'bi-trophy-fill'); ?> me-1"></i> <?php echo sanitize($sp['nama_sukan']); ?>
+                        </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
             <div class="row g-4">
                 <?php if (count($matches_past) > 0): ?>
                     <?php foreach ($matches_past as $row): ?>
