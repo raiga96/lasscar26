@@ -116,12 +116,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $sync_query = "
                 INSERT INTO tbl_kedudukan_pingat (bahagian_id, emas, perak, gangsa)
                 SELECT b.id,
-                       SUM(CASE WHEN k.jenis_pingat = 'emas' THEN 1 ELSE 0 END) AS emas,
-                       SUM(CASE WHEN k.jenis_pingat = 'perak' THEN 1 ELSE 0 END) AS perak,
-                       SUM(CASE WHEN k.jenis_pingat = 'gangsa' THEN 1 ELSE 0 END) AS gangsa
+                       SUM(CASE WHEN k.jenis_pingat = 'emas' AND p.id = k.pasukan_menang_id THEN 1 ELSE 0 END) AS emas,
+                       SUM(CASE 
+                           WHEN k.jenis_pingat = 'perak' AND p.id = k.pasukan_menang_id THEN 1 
+                           WHEN k.jenis_pingat = 'emas' AND ( (j.pasukan_a_id = p.id AND k.pasukan_menang_id = j.pasukan_b_id) OR (j.pasukan_b_id = p.id AND k.pasukan_menang_id = j.pasukan_a_id) ) THEN 1
+                           ELSE 0 
+                       END) AS perak,
+                       SUM(CASE WHEN k.jenis_pingat = 'gangsa' AND p.id = k.pasukan_menang_id THEN 1 ELSE 0 END) AS gangsa
                 FROM tbl_bahagian b
                 LEFT JOIN tbl_pasukan p ON p.bahagian_id = b.id
-                LEFT JOIN tbl_keputusan k ON k.pasukan_menang_id = p.id
+                LEFT JOIN tbl_jadual_perlawanan j ON (j.pasukan_a_id = p.id OR j.pasukan_b_id = p.id)
+                LEFT JOIN tbl_keputusan k ON k.jadual_id = j.id
                 GROUP BY b.id
                 ON DUPLICATE KEY UPDATE 
                     emas = VALUES(emas), 
@@ -135,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Log Audit
             log_audit($conn, $_SESSION['admin_id'], $tindakan, 'tbl_keputusan', $jadual_id, "Kemas kini keputusan perlawanan ID $jadual_id. Pemenang: " . ($pasukan_menang_id ?: 'Tiada') . ", Pingat: $jenis_pingat");
 
-            $_SESSION['success_msg'] = "Keputusan perlawanan berjaya direkodkan dan papan kedudukan pingat telah dikemas kini!";
+            $_SESSION['success_msg'] = "Keputusan perlawanan berjaya direkodkan! Pemenang mendapat Pingat Emas dan pasukan kalah secara automatik mendapat Pingat Perak.";
             header("Location: index.php");
             exit;
 
@@ -181,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div class="col-sm-6">
                     <span class="text-muted small d-block">Pusingan / Peringkat</span>
-                    <span class="badge bg-light text-secondary border"><?php echo sanitize($match['pusingan'] ?: 'Peringkat Kumpulan'); ?></span>
+                    <span class="badge bg-light text-secondary border" id="pusinganBadge"><?php echo sanitize($match['pusingan'] ?: 'Peringkat Kumpulan'); ?></span>
                 </div>
             </div>
         </div>
@@ -233,27 +238,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label for="pasukan_menang_id" class="form-label fw-semibold">Pilih Pemenang Perlawanan</label>
                         <select class="form-select" id="pasukan_menang_id" name="pasukan_menang_id">
                             <option value="">-- Seri / Tiada Pemenang / TBD --</option>
-                            <option value="<?php echo $match['pasukan_a_id']; ?>" <?php echo ($keputusan && $keputusan['pasukan_menang_id'] == $match['pasukan_a_id']) ? 'selected' : ''; ?>>
+                            <option value="<?php echo $match['pasukan_a_id']; ?>" data-name="<?php echo sanitize($display_a); ?>" <?php echo ($keputusan && $keputusan['pasukan_menang_id'] == $match['pasukan_a_id']) ? 'selected' : ''; ?>>
                                 <?php echo sanitize($display_a); ?> (Pasukan A)
                             </option>
                             <?php if ($match['pasukan_b_id'] !== null): ?>
-                                <option value="<?php echo $match['pasukan_b_id']; ?>" <?php echo ($keputusan && $keputusan['pasukan_menang_id'] == $match['pasukan_b_id']) ? 'selected' : ''; ?>>
+                                <option value="<?php echo $match['pasukan_b_id']; ?>" data-name="<?php echo sanitize($display_b); ?>" <?php echo ($keputusan && $keputusan['pasukan_menang_id'] == $match['pasukan_b_id']) ? 'selected' : ''; ?>>
                                     <?php echo sanitize($display_b); ?> (Pasukan B)
                                 </option>
                             <?php endif; ?>
                         </select>
-                        <div class="form-text small text-muted">Pilih kontinjen pemenang jika ada, untuk proses kemas kini kutipan pingat.</div>
+                        <div class="form-text small text-muted">Dipilih secara automatik mengikut keputusan skor di atas.</div>
                     </div>
 
                     <div class="col-md-6">
                         <label for="jenis_pingat" class="form-label fw-semibold">Anugerah Pingat Kejohanan</label>
                         <select class="form-select" id="jenis_pingat" name="jenis_pingat">
                             <option value="tiada" <?php echo ($keputusan && $keputusan['jenis_pingat'] === 'tiada') ? 'selected' : ''; ?>>Tiada (Peringkat Kumpulan / Awal)</option>
-                            <option value="emas" <?php echo ($keputusan && $keputusan['jenis_pingat'] === 'emas') ? 'selected' : ''; ?>>🥇 Pingat Emas (Gold)</option>
+                            <option value="emas" <?php echo ($keputusan && $keputusan['jenis_pingat'] === 'emas') ? 'selected' : ''; ?>>🥇 Pingat Emas (Juara) & Perak (Naib Juara)</option>
                             <option value="perak" <?php echo ($keputusan && $keputusan['jenis_pingat'] === 'perak') ? 'selected' : ''; ?>>🥈 Pingat Perak (Silver)</option>
                             <option value="gangsa" <?php echo ($keputusan && $keputusan['jenis_pingat'] === 'gangsa') ? 'selected' : ''; ?>>🥉 Pingat Gangsa (Bronze)</option>
                         </select>
-                        <div class="form-text small text-muted">Daftar pingat hanya untuk perlawanan penentuan tempat (Akhir / Ke-3).</div>
+                        <div class="form-text small text-muted">Bila 'Emas' dipilih, pemenang mendapat Emas & pasukan kalah mendapat Perak secara automatik.</div>
+                    </div>
+                </div>
+
+                <!-- Kad Live Summary Anugerah Pingat Automatik -->
+                <div id="medalPreviewBox" class="alert alert-warning border border-warning-subtle shadow-sm rounded-3 p-3 mb-3 d-none">
+                    <div class="fw-bold mb-2 text-dark"><i class="bi bi-award-fill text-warning me-1 fs-5"></i> Agihan Pingat Automatik Perlawanan Ini:</div>
+                    <div class="d-flex flex-column gap-1">
+                        <div id="goldWinnerBadge" class="fw-semibold text-dark"><span class="badge bg-warning text-dark me-2">🥇 EMAS (Gold)</span> <span id="textGoldWinner" class="text-navy font-bold">-</span></div>
+                        <div id="silverWinnerBadge" class="fw-semibold text-dark"><span class="badge bg-secondary text-white me-2">🥈 PERAK (Silver)</span> <span id="textSilverWinner" class="text-secondary font-bold">-</span></div>
                     </div>
                 </div>
 
@@ -285,6 +299,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const skorA = document.getElementById('skor_a');
+        const skorB = document.getElementById('skor_b');
+        const menangSelect = document.getElementById('pasukan_menang_id');
+        const jenisPingat = document.getElementById('jenis_pingat');
+        const statusSelect = document.getElementById('status');
+        const pusinganText = document.getElementById('pusinganBadge')?.textContent.toLowerCase() || '';
+
+        const pasukanAId = "<?php echo $match['pasukan_a_id']; ?>";
+        const pasukanBId = "<?php echo $match['pasukan_b_id'] ?? ''; ?>";
+        const namaA = "<?php echo sanitize(addslashes($display_a)); ?>";
+        const namaB = "<?php echo sanitize(addslashes($display_b)); ?>";
+
+        // Auto Pre-select Emas jika Pusingan Akhir / Final
+        if (pusinganText.includes('akhir') || pusinganText.includes('final')) {
+            if (jenisPingat && jenisPingat.value === 'tiada') {
+                jenisPingat.value = 'emas';
+            }
+        }
+
+        function updateAutomation() {
+            const valA = skorA ? parseInt(skorA.value) : null;
+            const valB = skorB ? parseInt(skorB.value) : null;
+
+            // Auto status ke selesai jika skor diisi
+            if ((!isNaN(valA) && valA !== null) || (!isNaN(valB) && valB !== null)) {
+                if (statusSelect && statusSelect.value !== 'selesai') {
+                    statusSelect.value = 'selesai';
+                }
+            }
+
+            // Auto-select pemenang
+            if (!isNaN(valA) && !isNaN(valB)) {
+                if (valA > valB) {
+                    menangSelect.value = pasukanAId;
+                } else if (valB > valA) {
+                    menangSelect.value = pasukanBId;
+                }
+            }
+
+            // Kemaskini Visual Preview Box Pingat
+            const selectedWinner = menangSelect.value;
+            const medalType = jenisPingat.value;
+            const previewBox = document.getElementById('medalPreviewBox');
+            const textGold = document.getElementById('textGoldWinner');
+            const textSilver = document.getElementById('textSilverWinner');
+
+            if (medalType === 'emas' && selectedWinner !== '') {
+                previewBox.classList.remove('d-none');
+                if (selectedWinner === pasukanAId) {
+                    textGold.textContent = namaA + " (Pasukan A)";
+                    textSilver.textContent = namaB !== 'TBD' ? namaB + " (Pasukan B)" : "Tiada / TBD";
+                } else if (selectedWinner === pasukanBId) {
+                    textGold.textContent = namaB + " (Pasukan B)";
+                    textSilver.textContent = namaA + " (Pasukan A)";
+                }
+            } else {
+                previewBox.classList.add('d-none');
+            }
+        }
+
+        if (skorA) skorA.addEventListener('input', updateAutomation);
+        if (skorB) skorB.addEventListener('input', updateAutomation);
+        if (menangSelect) menangSelect.addEventListener('change', updateAutomation);
+        if (jenisPingat) jenisPingat.addEventListener('change', updateAutomation);
+
+        // Jalankan sekali pada masa muat halaman
+        updateAutomation();
+    });
+
     (() => {
         'use strict'
         const forms = document.querySelectorAll('.needs-validation')
