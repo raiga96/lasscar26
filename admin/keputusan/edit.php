@@ -87,7 +87,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn->begin_transaction();
         
         try {
-            // A. Kemaskini Status Jadual Perlawanan
+            // A. Kemaskini Status Jadual Perlawanan (Auto 'selesai' jika skor/pemenang diisi)
+            if (($skor_a !== null || $skor_b !== null || $pasukan_menang_id !== null) && $status !== 'ditangguh') {
+                $status = 'selesai';
+            }
             $stmt_u_j = $conn->prepare("UPDATE tbl_jadual_perlawanan SET status = ? WHERE id = ?");
             $stmt_u_j->bind_param("si", $status, $jadual_id);
             $stmt_u_j->execute();

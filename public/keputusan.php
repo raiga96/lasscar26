@@ -52,20 +52,20 @@ $matches_past = [];
 
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        if ($row['status'] === 'live') {
-            $matches_live[] = $row;
-        } elseif ($row['status'] === 'akan_datang' || $row['status'] === 'ditangguh') {
-            // Tapis mengikut sukan jika penapis diaktifkan
-            if ($filter_sukan !== null && (int)$row['sukan_id'] !== $filter_sukan) {
-                continue;
-            }
-            $matches_next[] = $row;
-        } elseif ($row['status'] === 'selesai') {
+        if ($row['status'] === 'selesai' || $row['skor_a'] !== null || $row['pasukan_menang_id'] !== null) {
             // Tapis mengikut sukan jika penapis diaktifkan
             if ($filter_sukan !== null && (int)$row['sukan_id'] !== $filter_sukan) {
                 continue;
             }
             $matches_past[] = $row;
+        } elseif ($row['status'] === 'live') {
+            $matches_live[] = $row;
+        } else {
+            // Tapis mengikut sukan jika penapis diaktifkan
+            if ($filter_sukan !== null && (int)$row['sukan_id'] !== $filter_sukan) {
+                continue;
+            }
+            $matches_next[] = $row;
         }
     }
 }

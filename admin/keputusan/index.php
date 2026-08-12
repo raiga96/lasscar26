@@ -122,17 +122,19 @@ if ($res_sports) {
                         $display_b = $row['nama_b'] ?: ($row['bhg_b'] ?? 'TBD');
                         
                         $score_display = '';
-                        if ($row['j_status'] === 'akan_datang') {
-                            $score_display = "<span class='text-muted small'>Akan Berlangsung</span>";
-                        } else {
+                        if ($row['skor_a'] !== null || $row['skor_b'] !== null) {
                             $sk_a = ($row['skor_a'] !== null) ? $row['skor_a'] : '0';
                             $sk_b = ($row['skor_b'] !== null) ? $row['skor_b'] : '0';
                             
                             if ($row['jenis_perlawanan'] === 'individu' && $row['pasukan_b_id'] === null) {
-                                $score_display = "<span class='badge bg-light text-dark border p-2 fs-6'>" . sanitize($sk_a) . "</span>";
+                                $score_display = "<span class='badge bg-navy text-white p-2 fs-6 shadow-sm'>" . sanitize($sk_a) . "</span>";
                             } else {
-                                $score_display = "<span class='badge bg-light text-dark border p-2 fs-6'>" . sanitize($sk_a) . " - " . sanitize($sk_b) . "</span>";
+                                $score_display = "<span class='badge bg-navy text-white p-2 fs-6 shadow-sm'>" . sanitize($sk_a) . " - " . sanitize($sk_b) . "</span>";
                             }
+                        } elseif ($row['j_status'] === 'akan_datang') {
+                            $score_display = "<span class='text-muted small'>Akan Berlangsung</span>";
+                        } else {
+                            $score_display = "<span class='badge bg-light text-dark border p-2 fs-6'>0 - 0</span>";
                         }
 
                         $status_badge = '';
