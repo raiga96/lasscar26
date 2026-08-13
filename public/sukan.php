@@ -9,18 +9,8 @@ $page_title = "Acara Sukan & Kedudukan Pingat";
 require_once __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../includes/db.php';
 
-// 1. Query Juara Keseluruhan / Carta Kedudukan Pingat Kontinjen
-$overall_query = "
-    SELECT b.id, b.nama_bahagian, b.logo_url, b.jenis,
-           SUM(CASE WHEN k.jenis_pingat = 'emas' THEN 1 ELSE 0 END) AS emas,
-           SUM(CASE WHEN k.jenis_pingat = 'perak' THEN 1 ELSE 0 END) AS perak,
-           SUM(CASE WHEN k.jenis_pingat = 'gangsa' THEN 1 ELSE 0 END) AS gangsa,
-           SUM(CASE WHEN k.jenis_pingat IN ('emas','perak','gangsa') THEN 1 ELSE 0 END) AS jumlah
-    FROM tbl_bahagian b
-    LEFT JOIN tbl_pasukan p ON p.bahagian_id = b.id
-    LEFT JOIN tbl_keputusan k ON k.pasukan_menang_id = p.id
-    GROUP BY b.id, b.nama_bahagian, b.logo_url, b.jenis
-    ORDER BY emas DESC, perak DESC, gangsa DESC, b.nama_bahagian ASC";
+// 1. Query Juara Keseluruhan / Carta Kedudukan Pingat Kontinjen (guna vw_kedudukan_pingat)
+$overall_query = "SELECT * FROM vw_kedudukan_pingat";
 $overall_res = $conn->query($overall_query);
 
 $overall_standings = [];
@@ -34,14 +24,68 @@ if ($overall_res && $overall_res->num_rows > 0) {
 $juara_keseluruhan = (!empty($overall_standings) && $overall_standings[0]['emas'] > 0) ? $overall_standings[0] : null;
 
 // 2. Query Pemenang Pingat Mengikut Sukan (Emas, Perak, Gangsa)
+// Nota Claude (Backend): Perak merangkumi pemenang perlawanan 'perak' DAN naib juara (pasukan kalah) perlawanan Akhir ('emas')
 $medals_query = "
-    SELECT j.sukan_id, k.jenis_pingat, b.id as bahagian_id, b.nama_bahagian, b.logo_url, p.nama_pasukan
+    SELECT 
+        j.sukan_id,
+        'emas' AS jenis_pingat,
+        b.id AS bahagian_id,
+        b.nama_bahagian,
+        b.logo_url,
+        p.nama_pasukan
     FROM tbl_keputusan k
     JOIN tbl_jadual_perlawanan j ON k.jadual_id = j.id
     JOIN tbl_pasukan p ON k.pasukan_menang_id = p.id
     JOIN tbl_bahagian b ON p.bahagian_id = b.id
-    WHERE k.jenis_pingat IN ('emas', 'perak', 'gangsa')
-    ORDER BY FIELD(k.jenis_pingat, 'emas', 'perak', 'gangsa')";
+    WHERE k.jenis_pingat = 'emas' AND k.pasukan_menang_id IS NOT NULL
+
+    UNION ALL
+
+    SELECT 
+        j.sukan_id,
+        'perak' AS jenis_pingat,
+        b.id AS bahagian_id,
+        b.nama_bahagian,
+        b.logo_url,
+        p.nama_pasukan
+    FROM tbl_keputusan k
+    JOIN tbl_jadual_perlawanan j ON k.jadual_id = j.id
+    JOIN tbl_pasukan p ON k.pasukan_menang_id = p.id
+    JOIN tbl_bahagian b ON p.bahagian_id = b.id
+    WHERE k.jenis_pingat = 'perak' AND k.pasukan_menang_id IS NOT NULL
+
+    UNION ALL
+
+    SELECT 
+        j.sukan_id,
+        'perak' AS jenis_pingat,
+        b.id AS bahagian_id,
+        b.nama_bahagian,
+        b.logo_url,
+        p_perak.nama_pasukan
+    FROM tbl_keputusan k
+    JOIN tbl_jadual_perlawanan j ON k.jadual_id = j.id
+    JOIN tbl_pasukan p_perak ON (
+        (j.pasukan_a_id = p_perak.id AND k.pasukan_menang_id = j.pasukan_b_id) OR
+        (j.pasukan_b_id = p_perak.id AND k.pasukan_menang_id = j.pasukan_a_id)
+    )
+    JOIN tbl_bahagian b ON p_perak.bahagian_id = b.id
+    WHERE k.jenis_pingat = 'emas' AND k.pasukan_menang_id IS NOT NULL
+
+    UNION ALL
+
+    SELECT 
+        j.sukan_id,
+        'gangsa' AS jenis_pingat,
+        b.id AS bahagian_id,
+        b.nama_bahagian,
+        b.logo_url,
+        p.nama_pasukan
+    FROM tbl_keputusan k
+    JOIN tbl_jadual_perlawanan j ON k.jadual_id = j.id
+    JOIN tbl_pasukan p ON k.pasukan_menang_id = p.id
+    JOIN tbl_bahagian b ON p.bahagian_id = b.id
+    WHERE k.jenis_pingat = 'gangsa' AND k.pasukan_menang_id IS NOT NULL";
 $medals_res = $conn->query($medals_query);
 
 $sukan_medals = [];
@@ -52,7 +96,16 @@ if ($medals_res && $medals_res->num_rows > 0) {
         if (!isset($sukan_medals[$s_id][$pingat])) {
             $sukan_medals[$s_id][$pingat] = [];
         }
-        $sukan_medals[$s_id][$pingat][] = $m;
+        $exists = false;
+        foreach ($sukan_medals[$s_id][$pingat] as $existing) {
+            if ($existing['bahagian_id'] == $m['bahagian_id']) {
+                $exists = true;
+                break;
+            }
+        }
+        if (!$exists) {
+            $sukan_medals[$s_id][$pingat][] = $m;
+        }
     }
 }
 
