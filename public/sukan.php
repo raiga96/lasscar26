@@ -130,19 +130,27 @@ function get_sport_image_url($nama_sukan) {
 
 <div class="container mb-5">
 
-    <!-- Section: Highlight Juara Keseluruhan Kejohanan -->
-    <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-5" style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 50%, #fff 100%); border: 2px solid #f59e0b !important;">
+<!-- Section: Highlight Juara Keseluruhan Kejohanan -->
+<?php
+// Syarat Masa Pengumuman Rasmi: Sabtu, 15 Ogos 2026 Jam 7:00 Malam (19:00:00)
+// Menyokong parameter ?preview_juara=1 untuk pengujian urus setia
+$release_timestamp = strtotime('2026-08-15 19:00:00');
+$is_revealed = (time() >= $release_timestamp) || (isset($_GET['preview_juara']) && $_GET['preview_juara'] == '1');
+?>
+
+<?php if ($is_revealed): ?>
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-5" style="background: linear-gradient(135deg, #fffdf0 0%, #fef3c7 50%, #ffffff 100%); border: 2px solid #f59e0b !important;">
         <div class="card-body p-4 p-md-5">
             <div class="row align-items-center g-4">
-                <div class="col-12 col-lg-8">
+                <div class="col-12 col-lg-7">
                     <div class="d-flex align-items-center gap-2 mb-2">
                         <span class="badge bg-warning text-dark px-3 py-1.5 rounded-pill fw-bold fs-6 shadow-sm">
                             <i class="bi bi-award-fill me-1 text-danger"></i> PENDAHULU CARTA PINGAT
                         </span>
-                        <span class="text-muted small fw-semibold">| Pingat Emas Penentu Juara Keseluruhan</span>
+                        <span class="text-dark small fw-semibold">| Pingat Emas Penentu Juara Keseluruhan</span>
                     </div>
 
-                    <h2 class="fw-bold text-dark mb-3 display-6">
+                    <h2 class="fw-bold mb-3 display-6" style="color: #0f172a !important;">
                         🏆 Juara Keseluruhan Kejohanan
                     </h2>
 
@@ -152,9 +160,9 @@ function get_sport_image_url($nama_sukan) {
                         <div class="d-flex align-items-center gap-4 bg-white p-3 rounded-4 shadow-sm border border-warning">
                             <img src="<?php echo $juara_logo; ?>" alt="<?php echo sanitize($juara_keseluruhan['nama_bahagian']); ?>" class="img-thumbnail rounded-circle border-3 border-warning shadow-sm" style="width: 75px; height: 75px; object-fit: cover;">
                             <div>
-                                <span class="badge bg-gold text-dark mb-1 fw-bold px-2 py-1">TEMPAT PERTAMA</span>
-                                <h3 class="fw-bold text-navy mb-1 fs-4"><?php echo sanitize($juara_keseluruhan['nama_bahagian']); ?></h3>
-                                <p class="text-muted small mb-0">Mendahului kutipan pingat keseluruhan LASSCAR 2026</p>
+                                <span class="badge bg-warning text-dark mb-1 fw-bold px-2.5 py-1" style="font-size: 0.75rem;">TEMPAT PERTAMA</span>
+                                <h3 class="fw-bold mb-1 fs-4" style="color: #0f172a !important;"><?php echo sanitize($juara_keseluruhan['nama_bahagian']); ?></h3>
+                                <p class="text-secondary small mb-0 fw-medium">Mendahului kutipan pingat keseluruhan LASSCAR 2026</p>
                             </div>
                         </div>
                     <?php else: ?>
@@ -164,29 +172,31 @@ function get_sport_image_url($nama_sukan) {
                     <?php endif; ?>
                 </div>
 
-                <div class="col-12 col-lg-4">
-                    <!-- Ringkasan Pingat Top 3 Kontinjen -->
-                    <div class="bg-navy text-white p-4 rounded-4 shadow-sm">
-                        <h5 class="fw-bold mb-3 text-warning border-bottom border-warning pb-2 d-flex align-items-center gap-2">
-                            <i class="bi bi-bar-chart-line-fill"></i> Tiga Kontinjen Teratas
+                <div class="col-12 col-lg-5">
+                    <!-- Ringkasan Pingat Top 3 Kontinjen (Pengaturan Warna Font ChatGPT) -->
+                    <div class="bg-white p-4 rounded-4 shadow-sm border border-warning">
+                        <h5 class="fw-bold mb-3 border-bottom pb-2 d-flex align-items-center gap-2" style="color: #0f172a !important; border-color: #fde047 !important;">
+                            <i class="bi bi-bar-chart-line-fill text-warning"></i> Tiga Kontinjen Teratas
                         </h5>
                         <?php if (!empty($overall_standings)): ?>
-                            <div class="d-flex flex-column gap-2">
+                            <div class="d-flex flex-column gap-2.5">
                                 <?php 
                                 $top3 = array_slice($overall_standings, 0, 3);
                                 $pos = 1;
                                 foreach ($top3 as $st):
                                     $med_icon = ($pos === 1) ? '🥇' : (($pos === 2) ? '🥈' : '🥉');
                                 ?>
-                                    <div class="d-flex align-items-center justify-content-between bg-white bg-opacity-10 p-2 rounded-3">
+                                    <div class="d-flex align-items-center justify-content-between p-2.5 rounded-3 border" style="background-color: #f8fafc; border-color: #e2e8f0 !important;">
                                         <div class="d-flex align-items-center gap-2">
                                             <span class="fs-5"><?php echo $med_icon; ?></span>
-                                            <span class="fw-semibold text-white small text-truncate" style="max-width: 140px;"><?php echo sanitize($st['nama_bahagian']); ?></span>
+                                            <span class="fw-bold small text-truncate" style="color: #0f172a !important; max-width: 160px; font-size: 0.9rem;">
+                                                <?php echo sanitize($st['nama_bahagian']); ?>
+                                            </span>
                                         </div>
                                         <div class="d-flex gap-1 text-center small fw-bold">
-                                            <span class="badge bg-warning text-dark px-2"><?php echo $st['emas']; ?> E</span>
-                                            <span class="badge bg-secondary px-2"><?php echo $st['perak']; ?> P</span>
-                                            <span class="badge bg-danger bg-opacity-75 px-2"><?php echo $st['gangsa']; ?> G</span>
+                                            <span class="badge text-dark px-2 py-1" style="background-color: #fef08a; border: 1px solid #facc15;"><?php echo $st['emas']; ?>E</span>
+                                            <span class="badge text-dark px-2 py-1" style="background-color: #e2e8f0; border: 1px solid #cbd5e1;"><?php echo $st['perak']; ?>P</span>
+                                            <span class="badge text-dark px-2 py-1" style="background-color: #ffedd5; border: 1px solid #fdba74; color: #9a3412 !important;"><?php echo $st['gangsa']; ?>G</span>
                                         </div>
                                     </div>
                                 <?php 
@@ -195,7 +205,7 @@ function get_sport_image_url($nama_sukan) {
                                 ?>
                             </div>
                             <div class="text-end mt-3">
-                                <a href="kedudukan-pingat.php" class="btn btn-gold btn-sm fw-bold px-3 rounded-pill">
+                                <a href="kedudukan-pingat.php" class="btn btn-navy btn-sm fw-bold px-3 rounded-pill text-white shadow-sm">
                                     Lihat Papan Pingat Penuh <i class="bi bi-arrow-right ms-1"></i>
                                 </a>
                             </div>
@@ -205,6 +215,34 @@ function get_sport_image_url($nama_sukan) {
             </div>
         </div>
     </div>
+<?php else: ?>
+    <!-- Teaser Card Sebelum 15 Ogos 2026 Jam 7 Malam -->
+    <div class="card border-0 shadow-md rounded-4 overflow-hidden mb-5" style="background: linear-gradient(135deg, #04101e 0%, #0a2540 60%, #1e3a5f 100%); border-bottom: 4px solid var(--gold) !important;">
+        <div class="card-body p-4 p-md-5 text-center text-white">
+            <div class="mb-3">
+                <span class="badge bg-gold text-dark fs-6 py-2 px-4 fw-bold rounded-pill shadow-sm">
+                    <i class="bi bi-clock-history me-1"></i> PENGUMUMAN JUARA KESELURUHAN
+                </span>
+            </div>
+            <h3 class="fw-bold text-white mb-2 display-6">🏆 Juara Keseluruhan Kejohanan LASSCAR 2026</h3>
+            <p class="lead text-light col-md-9 mx-auto fs-6 opacity-90 mb-4">
+                Pengumuman rasmi <strong>Juara Keseluruhan Kejohanan</strong> dan penyerahan piala pusingan akan diumumkan secara rasmi pada:
+            </p>
+
+            <div class="d-inline-flex align-items-center justify-content-center gap-3 bg-white bg-opacity-10 border border-warning rounded-4 px-4 py-3 shadow-sm mb-3">
+                <i class="bi bi-calendar-check-fill text-warning fs-3"></i>
+                <div class="text-start">
+                    <div class="fw-bold text-warning fs-5">Sabtu, 15 Ogos 2026</div>
+                    <div class="text-light small"><i class="bi bi-clock me-1"></i> Jam 7:00 Malam (19:00 MYT)</div>
+                </div>
+            </div>
+
+            <p class="small text-muted mb-0 opacity-75">
+                <em>*Kedudukan Pingat semasa boleh disemak melalui carta kedudukan pingat mengikut sukan di bawah.</em>
+            </p>
+        </div>
+    </div>
+<?php endif; ?>
 
     <!-- Section Title: Senarai Acara Sukan -->
     <div class="d-flex align-items-center justify-content-between mb-4 pb-2 border-bottom">
