@@ -217,29 +217,31 @@ $is_revealed = (time() >= $release_timestamp) || (isset($_GET['preview_juara']) 
     </div>
 <?php else: ?>
     <!-- Teaser Card Sebelum 15 Ogos 2026 Jam 7 Malam -->
-    <div class="card border-0 shadow-md rounded-4 overflow-hidden mb-5" style="background: linear-gradient(135deg, #04101e 0%, #0a2540 60%, #1e3a5f 100%); border-bottom: 4px solid var(--gold) !important;">
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-5" style="background: linear-gradient(135deg, #04101e 0%, #0a2540 60%, #1e3a5f 100%); border-bottom: 5px solid #f59e0b !important;">
         <div class="card-body p-4 p-md-5 text-center text-white">
             <div class="mb-3">
-                <span class="badge bg-gold text-dark fs-6 py-2 px-4 fw-bold rounded-pill shadow-sm">
-                    <i class="bi bi-clock-history me-1"></i> PENGUMUMAN JUARA KESELURUHAN
+                <span class="badge fs-6 py-2.5 px-4 fw-bold rounded-pill shadow-sm" style="background-color: #fbbf24 !important; color: #0f172a !important; font-size: 0.9rem !important;">
+                    <i class="bi bi-clock-history me-1 text-danger"></i> PENGUMUMAN JUARA KESELURUHAN
                 </span>
             </div>
-            <h3 class="fw-bold text-white mb-2 display-6">🏆 Juara Keseluruhan Kejohanan LASSCAR 2026</h3>
-            <p class="lead text-light col-md-9 mx-auto fs-6 opacity-90 mb-4">
+            <h3 class="fw-bold text-white mb-2 display-6" style="color: #ffffff !important;">🏆 Juara Keseluruhan Kejohanan LASSCAR 2026</h3>
+            <p class="lead text-light col-md-9 mx-auto fs-6 opacity-90 mb-4" style="color: #f1f5f9 !important;">
                 Pengumuman rasmi <strong>Juara Keseluruhan Kejohanan</strong> dan penyerahan piala pusingan akan diumumkan secara rasmi pada:
             </p>
 
             <div class="d-inline-flex align-items-center justify-content-center gap-3 bg-white bg-opacity-10 border border-warning rounded-4 px-4 py-3 shadow-sm mb-3">
                 <i class="bi bi-calendar-check-fill text-warning fs-3"></i>
                 <div class="text-start">
-                    <div class="fw-bold text-warning fs-5">Sabtu, 15 Ogos 2026</div>
-                    <div class="text-light small"><i class="bi bi-clock me-1"></i> Jam 7:00 Malam (19:00 MYT)</div>
+                    <div class="fw-bold fs-5" style="color: #fbbf24 !important;">Sabtu, 15 Ogos 2026</div>
+                    <div class="small fw-medium" style="color: #ffffff !important;"><i class="bi bi-clock me-1 text-warning"></i> Jam 7:00 Malam (19:00 MYT)</div>
                 </div>
             </div>
 
-            <p class="small text-muted mb-0 opacity-75">
-                <em>*Kedudukan Pingat semasa boleh disemak melalui carta kedudukan pingat mengikut sukan di bawah.</em>
-            </p>
+            <div class="mt-2">
+                <span class="small fw-semibold" style="color: #cbd5e1 !important; font-size: 0.85rem;">
+                    *Kedudukan Pingat semasa boleh disemak melalui carta kedudukan pingat mengikut sukan di bawah.
+                </span>
+            </div>
         </div>
     </div>
 <?php endif; ?>
