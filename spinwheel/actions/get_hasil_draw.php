@@ -35,9 +35,7 @@ if (!$data || empty($data['nama_bahagian'])) {
     ];
 }
 
-$logo_full_path = !empty($data['logo_url']) 
-    ? '../assets/uploads/logo-bahagian/' . $data['logo_url']
-    : '../assets/uploads/logo-bahagian/default_logo.png';
+$logo_full_path = 'https://jts.sarawak.gov.my/lasscar26/assets/uploads/logo-bahagian/e5ff93da82480b9ee77a86d8d48321e6.png';
 
 // Log reveal
 $log_stmt = $conn->prepare("INSERT INTO tbl_lasscar_draw_log (id_draw, tindakan) VALUES (?, 'reveal')");

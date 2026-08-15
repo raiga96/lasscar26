@@ -99,7 +99,7 @@ if ($chk && $chk->num_rows > 0) {
 
                     <!-- Hub Tengah Roda -->
                     <div class="wheel-center-hub">
-                        <img src="../assets/uploads/logo-bahagian/default_logo.png" style="width: 50px; height: 50px; object-fit: contain;" alt="JTS Logo">
+                        <img src="../assets/uploads/logo-bahagian/default_logo.png" style="width: 80px; height: 80px; object-fit: contain;" alt="JTS Logo">
                     </div>
                 </div>
 
@@ -123,7 +123,7 @@ if ($chk && $chk->num_rows > 0) {
 
     <!-- Footer Copyright -->
     <footer class="text-center py-3 text-slate-400 small opacity-60">
-        &copy; 2026 Jabatan Tanah dan Survei Sarawak — Modul Spin Wheel LASSCAR 2028
+        &copy; 2026 Jabatan Tanah dan Survei Sarawak — LASSCAR 2028
     </footer>
 
     <!-- Bootstrap 5 JS Bundle -->

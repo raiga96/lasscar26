@@ -66,14 +66,14 @@ $segment_center_angle = ($segment_index * $segment_angle) + ($segment_angle / 2.
 // Untuk mendarat di penunjuk ATAS (270°), putaran target = 270 - segment_center_angle
 $target_stop_angle = (270.0 - $segment_center_angle + 360.0) % 360.0;
 
-// Tambah 6 hingga 9 pusingan lengkap (360 * 6 = 2160)
-$num_full_spins = rand(6, 9);
+// Tambah 40 hingga 55 pusingan lengkap untuk menyokong tempoh putaran yang lebih panjang (40-55 saat)
+$duration_ms = rand(40, 55) * 1000; // 40,000ms hingga 55,000ms (40-55 saat)
+$num_full_spins = (int)($duration_ms / 1000); // 1 pusingan sesaat secara purata sebelum nyahpecutan
 
 // Jarak mikro offset rawak (-4° hingga +4°) untuk tampak semulajadi
 $micro_offset = (rand(-40, 40) / 10.0);
 
 $final_rotation_degrees = ($num_full_spins * 360.0) + $target_stop_angle + $micro_offset;
-$duration_ms = 7500; // 7.5 saat pusingan penuh yang mendebarkan
 
 // 4. Kemaskini status draw kepada 'sedia' supaya reveal sentiasa memulangkan penganjur MIRI
 $upd_stmt = $conn->prepare("UPDATE tbl_lasscar_draw SET status_draw = 'sedia' WHERE id = ?");

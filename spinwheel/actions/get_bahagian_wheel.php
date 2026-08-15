@@ -39,13 +39,13 @@ try {
     $bahagian_list = [];
     while ($row = $result->fetch_assoc()) {
         $logo_full_path = !empty($row['logo_url']) 
-            ? '../assets/uploads/logo-bahagian/' . $row['logo_url']
-            : '../assets/uploads/logo-bahagian/default_logo.png';
+            ? 'https://jts.sarawak.gov.my/lasscar26/assets/uploads/logo-bahagian/' . $row['logo_url']
+            : 'https://jts.sarawak.gov.my/lasscar26/assets/uploads/logo-bahagian/default_logo.png';
             
         $bahagian_list[] = [
             'id' => (int)$row['id'],
             'nama_bahagian' => $row['nama_bahagian'],
-            'singkatan' => $row['singkatan'] ?: $row['nama_bahagian'],
+            'singkatan' => preg_replace('/^LANDAS\s*/i', '', $row['nama_bahagian']),
             'logo_url' => $logo_full_path
         ];
     }

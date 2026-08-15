@@ -22,6 +22,126 @@ document.addEventListener('DOMContentLoaded', () => {
     let isSpinning = false;
     let loadedImages = {};
     let drawState = null;
+    let tickAnimId = null;
+
+    // Fail Audio Luaran Tempatan
+    const tickAudio = new Audio('assets/audio/tick.mp3');
+    const winAudio = new Audio('assets/audio/win.mp3');
+
+    // Pre-load fail audio
+    tickAudio.preload = 'auto';
+    winAudio.preload = 'auto';
+
+    // Mainkan bunyi tik mekanikal (Fail MP3 Luaran)
+    function playTickSound() {
+        try {
+            const snd = tickAudio.cloneNode();
+            snd.volume = 0.9;
+            const promise = snd.play();
+            if (promise !== undefined) {
+                promise.catch(err => {
+                    console.warn('Audio tick dimatikan oleh pelayar:', err);
+                });
+            }
+        } catch (e) {}
+    }
+
+    // Mainkan bunyi letupan & gemercik bunga api (Fireworks Boom & Crackles)
+    function playFireworksBoom() {
+        try {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextClass) return;
+            const ctx = new AudioContextClass();
+
+            // 1. Letupan Bunyi Boom Bunga Api (Bass Low-Frequency Boom)
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(180, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.55);
+
+            gain.gain.setValueAtTime(0.85, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.65);
+
+            // 2. Bunyi Percikan/Pop Bunga Api Berterusan (Fireworks Crackles)
+            for (let i = 0; i < 10; i++) {
+                const delay = 0.15 + (i * 0.15) + (Math.random() * 0.12);
+                const popOsc = ctx.createOscillator();
+                const popGain = ctx.createGain();
+
+                popOsc.type = 'triangle';
+                popOsc.frequency.setValueAtTime(350 + Math.random() * 450, ctx.currentTime + delay);
+                popOsc.frequency.exponentialRampToValueAtTime(90, ctx.currentTime + delay + 0.05);
+
+                popGain.gain.setValueAtTime(0.35, ctx.currentTime + delay);
+                popGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.06);
+
+                popOsc.connect(popGain);
+                popGain.connect(ctx.destination);
+
+                popOsc.start(ctx.currentTime + delay);
+                popOsc.stop(ctx.currentTime + delay + 0.07);
+            }
+        } catch (e) {}
+    }
+
+    // Mainkan bunyi Kemenangan & Bunga Api
+    function playWinFanfare() {
+        try {
+            winAudio.currentTime = 0;
+            winAudio.volume = 1.0;
+            const promise = winAudio.play();
+            if (promise !== undefined) {
+                promise.catch(err => {
+                    console.warn('Audio win dimatikan oleh pelayar:', err);
+                });
+            }
+        } catch (e) {}
+
+        // Mainkan kesan letupan bunga api bersama pertunjukan bunga api
+        playFireworksBoom();
+    }
+
+    // Time-Based Rotation Sound Engine (Bermula serta-merta mengikut sudut putaran sasaran)
+    function startTickLoop(totalDegrees, durationMs, numSegments) {
+        if (tickAnimId) cancelAnimationFrame(tickAnimId);
+
+        const segmentAngle = 360 / Math.max(1, numSegments || 13);
+        let lastPlayedTickIndex = 0;
+        const startTime = performance.now();
+
+        // Mainkan bunyi klik pertama secara SERTA-MERTA apabila spin bermula
+        playTickSound();
+
+        function updateTick(currentTime) {
+            if (!isSpinning) return;
+
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(1, Math.max(0, elapsed / durationMs));
+
+            // Lengkung nyahpecutan yang selari dengan CSS cubic-bezier(0.15, 0.85, 0.15, 1)
+            const easedProgress = 1 - Math.pow(1 - progress, 3.2);
+            const currentRotatedDegrees = easedProgress * totalDegrees;
+
+            const currentTickIndex = Math.floor(currentRotatedDegrees / segmentAngle);
+
+            while (lastPlayedTickIndex < currentTickIndex) {
+                playTickSound();
+                lastPlayedTickIndex++;
+            }
+
+            if (elapsed < durationMs) {
+                tickAnimId = requestAnimationFrame(updateTick);
+            }
+        }
+
+        tickAnimId = requestAnimationFrame(updateTick);
+    }
 
     // Skala Canvas mengikut saiz paparan sebenar
     function setupCanvasSize() {
@@ -32,9 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Skim warna teras kontras & elegan untuk 13 bahagian
     const colorPalette = [
-        '#0f172a', '#1e3a8a', '#1e293b', '#1e1b4b', '#0f766e',
-        '#312e81', '#172554', '#1e293b', '#0284c7', '#0369a1',
-        '#334155', '#1e3a8a', '#0f172a'
+        '#0f172a', '#1e3a8a'
     ];
 
     // Preload logo imej
@@ -207,9 +325,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     canvas.style.transition = `transform ${duration}ms cubic-bezier(0.15, 0.85, 0.15, 1)`;
                     canvas.style.transform = `rotate(${targetDegrees}deg)`;
 
+                    // Mula gelung bunyi klik semasa berputar
+                    startTickLoop(targetDegrees, duration, items.length);
+
                     // Tunggu animasi tamat untuk trigger reveal
                     setTimeout(() => {
                         isSpinning = false;
+                        if (tickAnimId) cancelAnimationFrame(tickAnimId);
                         fetchRevealResult();
                     }, duration + 300);
 
@@ -237,6 +359,9 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 if (data.status === 'success') {
                     const p = data.pemenang;
+
+                    // Mainkan bunyi fanfare kemenangan
+                    playWinFanfare();
 
                     // Pertunjukan Bunga Api Berterusan (Fireworks Cannons)
                     if (typeof confetti === 'function') {
